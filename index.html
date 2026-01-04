@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TXT ⇌ M3U 转换工具（保留📡）</title>
+    <title>TXT ⇌ M3U 转换工具（繁转简+保留📡）</title>
     <style>
         * {
             margin: 0;
@@ -131,7 +131,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>TXT ⇌ M3U 转换工具（保留📡）</h1>
+        <h1>TXT ⇌ M3U 转换工具（繁转简+保留📡）</h1>
 
         <div class="input-item">
             <label>EPG 地址 (TXT → M3U)</label>
@@ -146,6 +146,11 @@
         <div class="checkbox-item">
             <input type="checkbox" id="cleanName" checked>
             <label for="cleanName">TXT转M3U 净化频道名（去 高清/HD 等）</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="toSimplified" checked>
+            <label for="toSimplified">自动繁转简（分类名/频道名）</label>
         </div>
 
         <div class="upload-area">
@@ -180,11 +185,45 @@
         const epgUrl = document.getElementById('epgUrl');
         const logoUrl = document.getElementById('logoUrl');
         const cleanName = document.getElementById('cleanName');
+        const toSimplified = document.getElementById('toSimplified');
         const inputContent = document.getElementById('inputContent');
         const output = document.getElementById('output');
         const fileInput = document.getElementById('fileInput');
         const fileTip = document.getElementById('fileTip');
         const downloadType = document.getElementById('downloadType');
+
+        // 繁转简核心函数 - 扩充完整映射表
+        function繁转简(str) {
+            if (!toSimplified.checked) return str;
+            const繁简映射 = {
+                // 基础分类
+                '頻道': '频道', '衛視': '卫视', '節目': '节目', '頻道': '频道',
+                // 影视类
+                '電影': '电影', '劇場': '剧场', '影院': '影院', '連續劇': '连续剧',
+                '動畫': '动画', '卡通': '卡通', '紀錄片': '纪录片', '短片': '短片',
+                // 新闻类
+                '新聞': '新闻', '時事': '时事', '資訊': '资讯', '財經': '财经', '國際': '国际',
+                '本地': '本地', '社會': '社会', '政治': '政治',
+                // 体育类
+                '體育': '体育', '足球': '足球', '籃球': '篮球', '排球': '排球', '網球': '网球',
+                '賽車': '赛车', '奧運': '奥运', '運動': '运动',
+                // 综艺类
+                '綜藝': '综艺', '娛樂': '娱乐', '音樂': '音乐', '歌唱': '歌唱', '訪談': '访谈',
+                '真人秀': '真人秀', '脫口秀': '脱口秀',
+                // 地区类
+                '香港': '香港', '台灣': '台湾', '澳門': '澳门', '中國': '中国', '亞洲': '亚洲',
+                '歐美': '欧美', '日本': '日本', '韓國': '韩国',
+                // 画质类
+                '高清': '高清', '超清': '超清', '4K': '4K', '8K': '8K', '藍光': '蓝光',
+                // 常用词
+                '經典': '经典', '熱播': '热播', '精選': '精选', '直播': '直播', '回放': '回放'
+            };
+            // 遍历映射表替换
+            for (const [繁, 简] of Object.entries(繁简映射)) {
+                str = str.replace(new RegExp(繁, 'g'), 简);
+            }
+            return str;
+        }
 
         // 监听文件上传
         fileInput.addEventListener('change', function(e) {
@@ -196,7 +235,7 @@
             fileTip.textContent = `已选：${file.name}`;
             const reader = new FileReader();
             reader.onload = function(event) {
-                inputContent.value = event.target.result;
+                inputContent.value = 繁转简(event.target.result);
             };
             reader.readAsText(file, 'utf-8');
         });
@@ -209,7 +248,7 @@
                 .replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
         }
 
-        // ========== TXT转M3U（直接读取带📡的分类名） ==========
+        // ========== TXT转M3U（繁转简+保留📡） ==========
         function txtToM3u() {
             const input = inputContent.value.trim();
             if (!input) {
@@ -219,14 +258,13 @@
 
             const epg = epgUrl.value.trim();
             const logoBase = logoUrl.value.trim().replace(/\/$/, '') + '/'; 
-            let lines = input.split('\n').map(line => line.trim()).filter(line => line);
+            let lines = input.split('\n').map(line => 繁转简(line.trim())).filter(line => line);
             
             let m3uContent = `#EXTM3U x-tvg-url="${epg}"\n`;
             let currentGroup = ''; 
 
             lines.forEach(line => {
                 if (line.endsWith(',#genre#')) {
-                    // 直接读取带📡的分类名
                     currentGroup = line.replace(',#genre#', '').trim();
                     return;
                 }
@@ -237,7 +275,6 @@
 
                     const fmtName = cleanChannelName(name);
                     const logo = `${logoBase}${fmtName}.png`;
-                    // group-title直接用带📡的分类名
                     m3uContent += `#EXTINF:-1 tvg-id="${fmtName}" tvg-name="${fmtName}" tvg-logo="${logo}" group-title="${currentGroup}",${fmtName}\n`;
                     m3uContent += `${url}\n`;
                 }
@@ -246,7 +283,7 @@
             output.value = m3uContent;
         }
 
-        // ========== M3U转TXT（保留📡标识） ==========
+        // ========== M3U转TXT（繁转简+保留📡） ==========
         function m3uToTxt() {
             const input = inputContent.value.trim();
             if (!input) {
@@ -254,25 +291,22 @@
                 return;
             }
 
-            let lines = input.split('\n').map(line => line.trim()).filter(line => line);
+            let lines = input.split('\n').map(line => 繁转简(line.trim())).filter(line => line);
             let txtContent = '';
             let lastGroup = ''; 
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
                 if (line.startsWith('#EXTINF')) {
-                    // 提取带📡的group-title
                     const groupMatch = line.match(/group-title="([^"]+)"/);
-                    // 无分组时默认带📡
-                    const group = groupMatch ? groupMatch[1].trim() : '默认分类📡';
+                    const group = groupMatch ? 繁转简(groupMatch[1].trim()) : '默认分类📡';
                     
                     const nameMatch = line.match(/tvg-name="([^"]+)"/);
-                    const name = nameMatch ? nameMatch[1].trim() : line.split(',').pop().trim();
+                    const name = nameMatch ? 繁转简(nameMatch[1].trim()) : 繁转简(line.split(',').pop().trim());
                     
                     const url = lines[i + 1] || '';
 
                     if (group !== lastGroup) {
-                        // 生成带📡的分组行
                         txtContent += `${group},#genre#\n`;
                         lastGroup = group;
                     }
