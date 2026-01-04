@@ -2,360 +2,154 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TXT ⇌ M3U 转换工具（繁转简+保留📡）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>TXT/M3U转换工具（手机修复版）</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background: #f5f5f5;
-            padding: 20px 15px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .input-item {
-            margin-bottom: 12px;
-        }
-        .input-item label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 4px;
-            display: block;
-        }
-        .input-item input {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin: 8px 0;
-            font-size: 13px;
-            color: #666;
-        }
-        .checkbox-item input {
-            width: 14px;
-            height: 14px;
-            margin-right: 6px;
-        }
-        .upload-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0 15px;
-        }
-        .upload-btn {
-            padding: 8px 15px;
-            background: #1677ff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        #fileInput {
-            display: none;
-        }
-        .file-tip {
-            font-size: 13px;
-            color: #999;
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            min-height: 200px;
-            resize: vertical;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .btn-group button {
-            flex: 1;
-            padding: 8px 0;
-            background: #1677ff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            min-width: 70px;
-            font-size: 14px;
-        }
-        .btn-group button:hover {
-            background: #0c66e4;
-        }
-        .download-select {
-            margin-bottom: 15px;
-        }
-        .download-select select {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-        #output {
-            min-height: 200px;
-            background: #fafafa;
-        }
+        * {margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+        body {background:#f5f5f5;padding:15px;}
+        .container {max-width:800px;margin:0 auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+        h1 {text-align:center;font-size:18px;color:#333;margin-bottom:20px;}
+        .input-item {margin-bottom:12px;}
+        .input-item label {font-size:14px;color:#666;margin-bottom:4px;display:block;}
+        .input-item input {width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:4px;font-size:13px;}
+        .checkbox-item {display:flex;align-items:center;margin:8px 0;font-size:13px;color:#666;}
+        .checkbox-item input {width:14px;height:14px;margin-right:6px;}
+        .upload-area {display:flex;align-items:center;gap:10px;margin:15px 0;}
+        .upload-btn {padding:10px 18px;background:#1677ff;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px;}
+        #fileInput {display:none;}
+        .file-tip {font-size:13px;color:#999;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        textarea {width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:4px;min-height:180px;resize:vertical;font-size:13px;margin-bottom:15px;}
+        .btn-group {display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;}
+        .btn-group button {flex:1;padding:10px 0;background:#1677ff;color:#fff;border:none;border-radius:4px;cursor:pointer;min-width:70px;font-size:14px;}
+        .download-select {margin-bottom:15px;}
+        .download-select select {width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:4px;font-size:13px;}
+        #output {min-height:180px;background:#fafafa;}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>TXT ⇌ M3U 转换工具（繁转简+保留📡）</h1>
-
+        <h1>TXT ⇌ M3U 转换（繁转简+📡）</h1>
         <div class="input-item">
-            <label>EPG 地址 (TXT → M3U)</label>
+            <label>EPG 地址</label>
             <input type="text" id="epgUrl" value="https://ie.erw.cc/all.xml.gz" placeholder="EPG地址">
         </div>
-
         <div class="input-item">
-            <label>Logo 基础地址 (结尾带 /)</label>
+            <label>Logo 基础地址（结尾带/）</label>
             <input type="text" id="logoUrl" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO1@main/icon/" placeholder="https://xxx/LOGO/">
         </div>
-
         <div class="checkbox-item">
             <input type="checkbox" id="cleanName" checked>
-            <label for="cleanName">TXT转M3U 净化频道名（去 高清/HD 等）</label>
+            <label for="cleanName">净化频道名（去高清/HD等）</label>
         </div>
-
         <div class="checkbox-item">
             <input type="checkbox" id="toSimplified" checked>
-            <label for="toSimplified">自动繁转简（分类名/频道名）</label>
+            <label for="toSimplified">自动繁转简（分类/频道名）</label>
         </div>
-
         <div class="upload-area">
-            <label for="fileInput" class="upload-btn">上传文件</label>
+            <label for="fileInput" class="upload-btn">选择文件</label>
             <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8">
             <span class="file-tip" id="fileTip">未选择文件</span>
         </div>
-
-        <textarea id="inputContent" placeholder="粘贴TXT/M3U内容，或上传文件"></textarea>
-
+        <textarea id="inputContent" placeholder="粘贴内容/上传文件"></textarea>
         <div class="btn-group">
-            <button onclick="txtToM3u()">TXT → M3U</button>
-            <button onclick="m3uToTxt()">M3U → TXT</button>
-            <button onclick="clearAll()">清空内容</button>
+            <button onclick="txtToM3u()">TXT→M3U</button>
+            <button onclick="m3uToTxt()">M3U→TXT</button>
+            <button onclick="clearAll()">清空</button>
             <button onclick="copyResult()">复制结果</button>
         </div>
-
         <div class="download-select">
             <select id="downloadType">
-                <option value="m3u">下载为 .m3u</option>
-                <option value="txt">下载为 .txt</option>
+                <option value="m3u">下载.m3u</option>
+                <option value="txt">下载.txt</option>
             </select>
         </div>
-
         <button class="upload-btn" style="width:100%" onclick="downloadResult()">下载结果</button>
-
-        <textarea id="output" placeholder="转换结果在这里" readonly></textarea>
+        <textarea id="output" placeholder="转换结果" readonly></textarea>
     </div>
 
     <script>
-        // 元素获取
-        const epgUrl = document.getElementById('epgUrl');
-        const logoUrl = document.getElementById('logoUrl');
-        const cleanName = document.getElementById('cleanName');
-        const toSimplified = document.getElementById('toSimplified');
-        const inputContent = document.getElementById('inputContent');
-        const output = document.getElementById('output');
-        const fileInput = document.getElementById('fileInput');
-        const fileTip = document.getElementById('fileTip');
-        const downloadType = document.getElementById('downloadType');
-
-        // 繁转简核心函数 - 扩充完整映射表
-        function繁转简(str) {
-            if (!toSimplified.checked) return str;
-            const繁简映射 = {
-                // 基础分类
-                '頻道': '频道', '衛視': '卫视', '節目': '节目', '頻道': '频道',
-                // 影视类
-                '電影': '电影', '劇場': '剧场', '影院': '影院', '連續劇': '连续剧',
-                '動畫': '动画', '卡通': '卡通', '紀錄片': '纪录片', '短片': '短片',
-                // 新闻类
-                '新聞': '新闻', '時事': '时事', '資訊': '资讯', '財經': '财经', '國際': '国际',
-                '本地': '本地', '社會': '社会', '政治': '政治',
-                // 体育类
-                '體育': '体育', '足球': '足球', '籃球': '篮球', '排球': '排球', '網球': '网球',
-                '賽車': '赛车', '奧運': '奥运', '運動': '运动',
-                // 综艺类
-                '綜藝': '综艺', '娛樂': '娱乐', '音樂': '音乐', '歌唱': '歌唱', '訪談': '访谈',
-                '真人秀': '真人秀', '脫口秀': '脱口秀',
-                // 地区类
-                '香港': '香港', '台灣': '台湾', '澳門': '澳门', '中國': '中国', '亞洲': '亚洲',
-                '歐美': '欧美', '日本': '日本', '韓國': '韩国',
-                // 画质类
-                '高清': '高清', '超清': '超清', '4K': '4K', '8K': '8K', '藍光': '蓝光',
-                // 常用词
-                '經典': '经典', '熱播': '热播', '精選': '精选', '直播': '直播', '回放': '回放'
-            };
-            // 遍历映射表替换
-            for (const [繁, 简] of Object.entries(繁简映射)) {
-                str = str.replace(new RegExp(繁, 'g'), 简);
-            }
+        const epgUrl=document.getElementById('epgUrl'),logoUrl=document.getElementById('logoUrl'),cleanName=document.getElementById('cleanName'),toSimplified=document.getElementById('toSimplified'),inputContent=document.getElementById('inputContent'),output=document.getElementById('output'),fileInput=document.getElementById('fileInput'),fileTip=document.getElementById('fileTip'),downloadType=document.getElementById('downloadType');
+        
+        // 繁转简（完整版）
+        function繁转简(str){
+            if(!toSimplified.checked)return str;
+            const map={'國內':'国内','衛視':'卫视','廣東':'广东','香港':'香港','頻道':'频道','電影':'电影','劇場':'剧场','經典':'经典','新聞':'新闻','資訊':'资讯','財經':'财经','時事':'时事','國際':'国际','體育':'体育','籃球':'篮球','足球':'足球','綜藝':'综艺','娛樂':'娱乐','歌唱':'歌唱','脫口秀':'脱口秀','賽事':'赛事','直播':'直播','高清':'高清','超清':'超清','4K':'4K','藍光':'蓝光','精選':'精选','熱播':'热播'};
+            for(let [f,j] of Object.entries(map))str=str.replace(new RegExp(f,'g'),j);
             return str;
         }
 
-        // 监听文件上传
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) {
-                fileTip.textContent = '未选择文件';
-                return;
-            }
-            fileTip.textContent = `已选：${file.name}`;
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                inputContent.value = 繁转简(event.target.result);
-            };
-            reader.readAsText(file, 'utf-8');
+        // 📌手机上传修复核心：补文件校验+编码强制UTF8+错误监听
+        fileInput.addEventListener('change',function(e){
+            const file=e.target.files[0];
+            if(!file){fileTip.textContent='未选择文件';return;}
+            // 校验文件类型
+            const ext=file.name.split('.').pop().toLowerCase();
+            if(!['txt','m3u','m3u8'].includes(ext)){alert('仅支持TXT/M3U文件！');fileInput.value='';return;}
+            // 校验文件大小（手机防大文件卡死）
+            if(file.size>1024*1024){alert('文件不能超过1MB！');fileInput.value='';return;}
+            
+            fileTip.textContent=`已选：${file.name}`;
+            const reader=new FileReader();
+            reader.onload=function(e){inputContent.value=繁转简(e.target.result);};
+            reader.onerror=function(){alert('文件读取失败！换浏览器试试');fileInput.value='';fileTip.textContent='读取失败';};
+            reader.onabort=function(){alert('读取被中断');};
+            // 手机强制UTF-8编码（关键修复）
+            reader.readAsText(file,'UTF-8');
         });
 
         // 频道名净化
-        function cleanChannelName(name) {
-            if (!cleanName.checked) return name;
-            return name.replace(/\s+/g, '')
-                .replace(/高清|HD|超清|频道|卫视/g, '')
-                .replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
+        function cleanChannelName(name){
+            if(!cleanName.checked)return name;
+            return name.replace(/\s+/g,'').replace(/高清|HD|超清|频道|卫视/g,'').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g,'');
         }
 
-        // ========== TXT转M3U（繁转简+保留📡） ==========
-        function txtToM3u() {
-            const input = inputContent.value.trim();
-            if (!input) {
-                alert('请输入内容');
-                return;
-            }
-
-            const epg = epgUrl.value.trim();
-            const logoBase = logoUrl.value.trim().replace(/\/$/, '') + '/'; 
-            let lines = input.split('\n').map(line => 繁转简(line.trim())).filter(line => line);
-            
-            let m3uContent = `#EXTM3U x-tvg-url="${epg}"\n`;
-            let currentGroup = ''; 
-
-            lines.forEach(line => {
-                if (line.endsWith(',#genre#')) {
-                    currentGroup = line.replace(',#genre#', '').trim();
-                    return;
-                }
-
-                if (line.includes(',')) {
-                    const [name, url] = line.split(',').map(item => item.trim());
-                    if (!name || !url) return;
-
-                    const fmtName = cleanChannelName(name);
-                    const logo = `${logoBase}${fmtName}.png`;
-                    m3uContent += `#EXTINF:-1 tvg-id="${fmtName}" tvg-name="${fmtName}" tvg-logo="${logo}" group-title="${currentGroup}",${fmtName}\n`;
-                    m3uContent += `${url}\n`;
+        // TXT转M3U
+        function txtToM3u(){
+            const input=inputContent.value.trim();
+            if(!input){alert('请输入内容');return;}
+            const epg=epgUrl.value.trim(),logoBase=logoUrl.value.trim().replace(/\/$/,'')+'/';
+            let lines=input.split('\n').map(line=>繁转简(line.trim())).filter(line=>line),m3uContent=`#EXTM3U x-tvg-url="${epg}"\n`,currentGroup='';
+            lines.forEach(line=>{
+                if(line.endsWith(',#genre#')){currentGroup=line.replace(',#genre#','').trim();return;}
+                if(line.includes(',')){
+                    const [name,url]=line.split(',').map(item=>item.trim());
+                    if(!name||!url)return;
+                    const fmtName=cleanChannelName(name);
+                    m3uContent+=`#EXTINF:-1 tvg-id="${fmtName}" tvg-name="${fmtName}" tvg-logo="${logoBase}${fmtName}.png" group-title="${currentGroup}",${fmtName}\n${url}\n`;
                 }
             });
-
-            output.value = m3uContent;
+            output.value=m3uContent;
         }
 
-        // ========== M3U转TXT（繁转简+保留📡） ==========
-        function m3uToTxt() {
-            const input = inputContent.value.trim();
-            if (!input) {
-                alert('请输入内容');
-                return;
-            }
-
-            let lines = input.split('\n').map(line => 繁转简(line.trim())).filter(line => line);
-            let txtContent = '';
-            let lastGroup = ''; 
-
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                if (line.startsWith('#EXTINF')) {
-                    const groupMatch = line.match(/group-title="([^"]+)"/);
-                    const group = groupMatch ? 繁转简(groupMatch[1].trim()) : '默认分类📡';
-                    
-                    const nameMatch = line.match(/tvg-name="([^"]+)"/);
-                    const name = nameMatch ? 繁转简(nameMatch[1].trim()) : 繁转简(line.split(',').pop().trim());
-                    
-                    const url = lines[i + 1] || '';
-
-                    if (group !== lastGroup) {
-                        txtContent += `${group},#genre#\n`;
-                        lastGroup = group;
-                    }
-
-                    if (url.startsWith('http')) {
-                        txtContent += `${name},${url}\n`;
-                        i++; 
-                    }
+        // M3U转TXT
+        function m3uToTxt(){
+            const input=inputContent.value.trim();
+            if(!input){alert('请输入内容');return;}
+            let lines=input.split('\n').map(line=>繁转简(line.trim())).filter(line=>line),txtContent='',lastGroup='';
+            for(let i=0;i<lines.length;i++){
+                const line=lines[i];
+                if(line.startsWith('#EXTINF')){
+                    const groupMatch=line.match(/group-title="([^"]+)"/);
+                    const group=groupMatch?groupMatch[1].trim():'默认分类📡';
+                    const nameMatch=line.match(/tvg-name="([^"]+)"/);
+                    const name=nameMatch?nameMatch[1].trim():line.split(',').pop().trim();
+                    const url=lines[i+1]||'';
+                    if(group!==lastGroup){txtContent+=`${group},#genre#\n`;lastGroup=group;}
+                    if(url.startsWith('http')){txtContent+=`${name},${url}\n`;i++;}
                 }
             }
-
-            output.value = txtContent;
+            output.value=txtContent;
         }
 
-        function clearAll() {
-            inputContent.value = '';
-            output.value = '';
-            fileTip.textContent = '未选择文件';
-            fileInput.value = '';
+        function clearAll(){inputContent.value='';output.value='';fileInput.value='';fileTip.textContent='未选择文件';}
+        function copyResult(){
+            if(!output.value.trim()){alert('暂无结果');return;}
+            navigator.clipboard.writeText(output.value).then(()=>alert('复制成功')).catch(()=>{output.select();document.execCommand('copy');alert('复制成功');});
         }
-
-        function copyResult() {
-            const content = output.value.trim();
-            if (!content) {
-                alert('暂无结果');
-                return;
-            }
-            navigator.clipboard.writeText(content).then(() => {
-                alert('复制成功');
-            }).catch(() => {
-                output.select();
-                document.execCommand('copy');
-                alert('复制成功');
-            });
-        }
-
-        function downloadResult() {
-            const content = output.value.trim();
-            if (!content) {
-                alert('暂无结果');
-                return;
-            }
-            const type = downloadType.value;
-            const blob = new Blob([content], { type: 'text/plain' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `iptv-converted.${type}`;
-            a.click();
-            URL.revokeObjectURL(a.href);
+        function downloadResult(){
+            if(!output.value.trim()){alert('暂无结果');return;}
+            const type=downloadType.value,blob=new Blob([output.value],{type:'text/plain;charset=UTF-8'}),a=document.createElement('a');
+            a.href=URL.createObjectURL(blob);a.download=`iptv.${type}`;a.click();URL.revokeObjectURL(a.href);
         }
     </script>
 </body>
