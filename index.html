@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>TXT ⇄ M3U 转换工具</title>
+<style>
+body{font-family:Arial;background:#f5f6f7}
+.container{width:95%;max-width:900px;margin:30px auto;background:#fff;padding:20px;border-radius:8px}
+h2{text-align:center}
+input,textarea,button{width:100%;margin:6px 0;padding:8px}
+textarea{height:160px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{flex:1;background:#409eff;color:#fff;border:0;border-radius:4px;cursor:pointer}
+button:hover{opacity:.9}
+label{display:block;margin:4px 0}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>TXT ⇄ M3U 转换工具</h2>
+
+<input id="epg" placeholder="EPG 地址（TXT → M3U）" value="https://e.erw.cc/all.xml.gz">
+<input id="logo" placeholder="基础 Logo 地址（以 / 结尾）" value="https://live.404003.xyz/LOGO/">
+
+<label><input type="checkbox" id="clean" checked> TXT转M3U时频道名净化</label>
+<label><input type="checkbox" id="prefer" checked> M3U转TXT优先使用 tvg-name / tvg-id</label>
+<label><input type="checkbox" id="regroup"> 重新分组（忽略原分组）</label>
+
+<textarea id="input" placeholder="在此粘贴 TXT 或 M3U 列表…"></textarea>
+
+<div class="btns">
+<button onclick="txtToM3u()">TXT → M3U</button>
+<button onclick="m3uToTxt()">M3U → TXT</button>
+<button onclick="reGroup()">一键重新分组</button>
+<button onclick="clearAll()">清空内容</button>
+<button onclick="copyOut()">复制结果</button>
+</div>
+
+<textarea id="output" placeholder="转换结果将在这里显示…"></textarea>
+</div>
+
+<script>
+function cleanName(n){
+  return n.replace(/\s+/g,'')
+          .replace(/高清|HD|超清|频道/g,'');
+}
+
+function txtToM3u(){
+  let epg=document.getElementById('epg').value.trim();
+  let logo=document.getElementById('logo').value.trim();
+  let clean=document.getElementById('clean').checked;
+  let lines=input.value.split('\n');
+  let out=`#EXTM3U x-tvg-url="${epg}"\n`;
+
+  lines.forEach(l=>{
+    if(!l.includes(','))return;
+    let [name,url]=l.split(',');
+    name=name.trim();
+    url=url.trim();
+    if(clean) name=cleanName(name);
+    let logoUrl=logo?logo+name+'.png':'';
+    out+=`#EXTINF:-1 tvg-name="${name}" tvg-logo="${logoUrl}",${name}\n${url}\n`;
+  });
+  output.value=out;
+}
+
+function m3uToTxt(){
+  let prefer=document.getElementById('prefer').checked;
+  let lines=input.value.split('\n');
+  let name='';
+  let out='';
+  lines.forEach(l=>{
+    if(l.startsWith('#EXTINF')){
+      let m=l.match(/tvg-name="([^"]+)"/);
+      let n=l.match(/,(.*)$/);
+      name=prefer && m?m[1]:(n?n[1]:'');
+    }else if(l.startsWith('http')){
+      out+=`${name},${l}\n`;
+    }
+  });
+  output.value=out;
+}
+
+function reGroup(){
+  let lines=input.value.split('\n');
+  let out='#EXTM3U\n';
+  lines.forEach(l=>{
+    if(l.startsWith('#EXTINF')){
+      out+=l.replace(/group-title="[^"]*"/,'group-title="默认"')+'\n';
+    }else if(l.startsWith('http')){
+      out+=l+'\n';
+    }
+  });
+  output.value=out;
+}
+
+function clearAll(){
+  input.value='';
+  output.value='';
+}
+
+function copyOut(){
+  output.select();
+  document.execCommand('copy');
+  alert('已复制');
+}
+</script>
+</body>
+</html>
