@@ -7,7 +7,7 @@
 body{font-family:Arial;background:#f5f6f7}
 .container{width:95%;max-width:900px;margin:30px auto;background:#fff;padding:20px;border-radius:8px}
 h2{text-align:center}
-input,textarea,button{width:100%;margin:6px 0;padding:8px}
+input,textarea,button,select{width:100%;margin:6px 0;padding:8px}
 textarea{height:160px}
 .btns{display:flex;flex-wrap:wrap;gap:8px}
 button{flex:1;background:#409eff;color:#fff;border:0;border-radius:4px;cursor:pointer}
@@ -35,7 +35,13 @@ label{display:block;margin:4px 0}
 <button onclick="reGroup()">一键重新分组</button>
 <button onclick="clearAll()">清空内容</button>
 <button onclick="copyOut()">复制结果</button>
+<button onclick="downloadOut()">下载文件</button>
 </div>
+
+<select id="downloadType">
+  <option value="m3u">下载为 .m3u</option>
+  <option value="txt">下载为 .txt</option>
+</select>
 
 <textarea id="output" placeholder="转换结果将在这里显示…"></textarea>
 </div>
@@ -104,6 +110,24 @@ function copyOut(){
   output.select();
   document.execCommand('copy');
   alert('已复制');
+}
+
+function downloadOut(){
+  const text = output.value;
+  if(!text){
+    alert('没有可下载内容');
+    return;
+  }
+  const type = document.getElementById('downloadType').value;
+  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'playlist.' + type;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 </script>
 </body>
