@@ -1,134 +1,361 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<title>TXT ⇄ M3U 转换工具</title>
-<style>
-body{font-family:Arial;background:#f5f6f7}
-.container{width:95%;max-width:900px;margin:30px auto;background:#fff;padding:20px;border-radius:8px}
-h2{text-align:center}
-input,textarea,button,select{width:100%;margin:6px 0;padding:8px}
-textarea{height:160px}
-.btns{display:flex;flex-wrap:wrap;gap:8px}
-button{flex:1;background:#409eff;color:#fff;border:0;border-radius:4px;cursor:pointer}
-button:hover{opacity:.9}
-label{display:block;margin:4px 0}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TXT ⇌ M3U 转换工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Arial", sans-serif;
+        }
+        body {
+            background-color: #f7f7f7;
+            padding: 20px 15px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .tool-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .input-item {
+            margin-bottom: 12px;
+        }
+        .input-item label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .input-item input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+        }
+        .checkbox-list {
+            margin: 15px 0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+        .checkbox-item input {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+        }
+        /* 上传区域样式 */
+        .upload-area {
+            margin: 10px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .upload-btn {
+            padding: 8px 15px;
+            background: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .upload-btn:hover {
+            background: #0c66e4;
+        }
+        #fileUpload {
+            display: none;
+        }
+        .file-name {
+            font-size: 13px;
+            color: #666;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+            min-height: 180px;
+            resize: none;
+            margin-bottom: 12px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .btn-group button {
+            flex: 1;
+            padding: 8px 0;
+            background: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 70px;
+        }
+        .btn-group button:hover {
+            background: #0c66e4;
+        }
+        #output {
+            min-height: 120px;
+        }
+        /* 下载格式选择器 */
+        .download-type {
+            margin-bottom: 12px;
+        }
+        .download-type select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
-<h2>TXT ⇄ M3U 转换工具</h2>
+    <h1>TXT ⇌ M3U 转换工具</h1>
+    <div class="tool-box">
+        <!-- EPG地址 -->
+        <div class="input-item">
+            <label>EPG 地址 (TXT → M3U):</label>
+            <input type="text" id="epg" value="https://ie.erw.cc/all.xml.gz" placeholder="输入EPG地址">
+        </div>
 
-<input id="epg" placeholder="EPG 地址（TXT → M3U）" value="https://e.erw.cc/all.xml.gz">
-<input id="logo" placeholder="基础 Logo 地址（以 / 结尾）" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO1@main/icon/">
+        <!-- 基础Logo地址 -->
+        <div class="input-item">
+            <label>基础 Logo 地址:</label>
+            <input type="text" id="logo" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO1@main/icon/" placeholder="输入Logo基础地址">
+        </div>
 
-<label><input type="checkbox" id="clean" checked> TXT转M3U时频道名净化</label>
-<label><input type="checkbox" id="prefer" checked> M3U转TXT优先使用 tvg-name / tvg-id</label>
-<label><input type="checkbox" id="regroup"> 重新分组（忽略原分组）</label>
+        <!-- 复选框选项 -->
+        <div class="checkbox-list">
+            <div class="checkbox-item">
+                <input type="checkbox" id="clean" checked>
+                <label for="clean">TXT转M3U时，对频道名进行净化（EXTINF显示名）</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="prefer" checked>
+                <label for="prefer">M3U8转TXT时，优先使用 tvg-name / tvg-id作为频道名称（默认使用EXTINF显示名）</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="regroup">
+                <label for="regroup">重新分组 (忽略原有分组，按规则分组)</label>
+            </div>
+        </div>
 
-<textarea id="input" placeholder="在此粘贴 TXT 或 M3U 列表…"></textarea>
+        <!-- 新增文件上传区域 -->
+        <div class="upload-area">
+            <label for="fileUpload" class="upload-btn">上传文件</label>
+            <input type="file" id="fileUpload" accept=".txt,.m3u,.m3u8">
+            <span class="file-name" id="fileName">未选择文件</span>
+        </div>
 
-<div class="btns">
-<button onclick="txtToM3u()">TXT → M3U</button>
-<button onclick="m3uToTxt()">M3U → TXT</button>
-<button onclick="reGroup()">一键重新分组</button>
-<button onclick="clearAll()">清空内容</button>
-<button onclick="copyOut()">复制结果</button>
-<button onclick="downloadOut()">下载文件</button>
-</div>
+        <!-- 输入文本域 -->
+        <textarea id="input" placeholder="在此粘贴 TXT 或 M3U 列表..."></textarea>
 
-<select id="downloadType">
-  <option value="m3u">下载为 .m3u</option>
-  <option value="txt">下载为 .txt</option>
-</select>
+        <!-- 功能按钮（新增下载按钮） -->
+        <div class="btn-group">
+            <button onclick="txtToM3u()">TXT → M3U</button>
+            <button onclick="m3uToTxt()">M3U → TXT</button>
+            <button onclick="reGroup()">一键重新分组</button>
+            <button onclick="clearAll()">清空内容</button>
+            <button onclick="copyOut()">复制结果</button>
+            <button onclick="downloadOut()">下载结果</button>
+        </div>
 
-<textarea id="output" placeholder="转换结果将在这里显示…"></textarea>
-</div>
+        <!-- 下载格式选择 -->
+        <div class="download-type">
+            <select id="downloadType">
+                <option value="m3u">下载为 .m3u 格式</option>
+                <option value="txt">下载为 .txt 格式</option>
+            </select>
+        </div>
 
-<script>
-function cleanName(n){
-  return n.replace(/\s+/g,'')
-          .replace(/高清|HD|超清|频道/g,'');
-}
+        <!-- 输出文本域 -->
+        <textarea id="output" placeholder="转换结果将在这里显示..." readonly></textarea>
+    </div>
 
-function txtToM3u(){
-  let epg=document.getElementById('epg').value.trim();
-  let logo=document.getElementById('logo').value.trim();
-  let clean=document.getElementById('clean').checked;
-  let lines=input.value.split('\n');
-  let out=`#EXTM3U x-tvg-url="${epg}"\n`;
+    <script>
+        // 元素获取
+        const fileUpload = document.getElementById('fileUpload');
+        const fileName = document.getElementById('fileName');
+        const inputText = document.getElementById('input');
+        const outputText = document.getElementById('output');
+        const downloadType = document.getElementById('downloadType');
 
-  lines.forEach(l=>{
-    if(!l.includes(','))return;
-    let [name,url]=l.split(',');
-    name=name.trim();
-    url=url.trim();
-    if(clean) name=cleanName(name);
-    let logoUrl=logo?logo+name+'.png':'';
-    out+=`#EXTINF:-1 tvg-name="${name}" tvg-logo="${logoUrl}",${name}\n${url}\n`;
-  });
-  output.value=out;
-}
+        // 监听文件上传
+        fileUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) {
+                fileName.textContent = '未选择文件';
+                return;
+            }
+            // 显示文件名
+            fileName.textContent = file.name;
+            // 读取文件内容
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                inputText.value = event.target.result;
+            };
+            reader.readAsText(file, 'utf-8');
+        });
 
-function m3uToTxt(){
-  let prefer=document.getElementById('prefer').checked;
-  let lines=input.value.split('\n');
-  let name='';
-  let out='';
-  lines.forEach(l=>{
-    if(l.startsWith('#EXTINF')){
-      let m=l.match(/tvg-name="([^"]+)"/);
-      let n=l.match(/,(.*)$/);
-      name=prefer && m?m[1]:(n?n[1]:'');
-    }else if(l.startsWith('http')){
-      out+=`${name},${l}\n`;
-    }
-  });
-  output.value=out;
-}
+        // 频道名净化函数
+        function cleanName(n) {
+            if (!n) return '';
+            return n.replace(/\s+/g, '').replace(/[高清HD超清频道]/g, '');
+        }
 
-function reGroup(){
-  let lines=input.value.split('\n');
-  let out='#EXTM3U\n';
-  lines.forEach(l=>{
-    if(l.startsWith('#EXTINF')){
-      out+=l.replace(/group-title="[^"]*"/,'group-title="默认"')+'\n';
-    }else if(l.startsWith('http')){
-      out+=l+'\n';
-    }
-  });
-  output.value=out;
-}
+        // TXT转M3U核心逻辑
+        function txtToM3u() {
+            const epg = document.getElementById('epg').value.trim();
+            const logo = document.getElementById('logo').value.trim();
+            const clean = document.getElementById('clean').checked;
+            const input = inputText.value.trim();
 
-function clearAll(){
-  input.value='';
-  output.value='';
-}
+            if (!input) {
+                alert('请输入或上传转换内容');
+                return;
+            }
 
-function copyOut(){
-  output.select();
-  document.execCommand('copy');
-  alert('已复制');
-}
+            let lines = input.split('\n').filter(line => line.trim() !== '');
+            let m3uContent = `#EXTM3U x-tvg-url="${epg}"\n`;
 
-function downloadOut(){
-  const text = output.value;
-  if(!text){
-    alert('没有可下载内容');
-    return;
-  }
-  const type = document.getElementById('downloadType').value;
-  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'playlist.' + type;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-</script>
+            lines.forEach(line => {
+                let [name, url] = line.split(/\s+/);
+                url = url || line;
+                name = name || url.split('/').pop().replace(/\.\w+$/, '');
+                if (clean) name = cleanName(name);
+                const logoUrl = logo ? `${logo}${name}.png` : '';
+                m3uContent += `#EXTINF:-1 tvg-logo="${logoUrl}",${name}\n${url}\n`;
+            });
+
+            outputText.value = document.getElementById('regroup').checked ? reGroupContent(m3uContent) : m3uContent;
+        }
+
+        // M3U转TXT核心逻辑
+        function m3uToTxt() {
+            const prefer = document.getElementById('prefer').checked;
+            const input = inputText.value.trim();
+
+            if (!input) {
+                alert('请输入或上传转换内容');
+                return;
+            }
+
+            let lines = input.split('\n').filter(line => line.trim() !== '');
+            let txtContent = '';
+            let currentName = '';
+
+            lines.forEach((line, index) => {
+                if (line.startsWith('#EXTINF')) {
+                    if (prefer) {
+                        const tvgNameMatch = line.match(/tvg-name="([^"]+)"/);
+                        const tvgIdMatch = line.match(/tvg-id="([^"]+)"/);
+                        currentName = tvgNameMatch ? tvgNameMatch[1] : (tvgIdMatch ? tvgIdMatch[1] : '');
+                    }
+                    if (!currentName) currentName = line.split(',').pop() || '';
+                } else if (line.startsWith('http')) {
+                    txtContent += `${currentName}\t${line}\n`;
+                    currentName = '';
+                }
+            });
+
+            outputText.value = document.getElementById('regroup').checked ? reGroupContent(txtContent) : txtContent;
+        }
+
+        // 重新分组逻辑
+        function reGroupContent(content) {
+            let lines = content.split('\n').filter(line => line.trim() !== '');
+            return lines.sort((a, b) => {
+                const nameA = a.startsWith('#EXTINF') ? a.split(',').pop() : a.split('\t')[0];
+                const nameB = b.startsWith('#EXTINF') ? b.split(',').pop() : b.split('\t')[0];
+                return nameA.localeCompare(nameB, 'zh-CN');
+            }).join('\n');
+        }
+
+        // 一键重新分组
+        function reGroup() {
+            const content = outputText.value.trim() || inputText.value.trim();
+
+            if (!content) {
+                alert('暂无内容可分组');
+                return;
+            }
+            outputText.value = reGroupContent(content);
+        }
+
+        // 清空内容
+        function clearAll() {
+            inputText.value = '';
+            outputText.value = '';
+            fileName.textContent = '未选择文件';
+            fileUpload.value = '';
+        }
+
+        // 复制结果
+        function copyOut() {
+            const content = outputText.value.trim();
+
+            if (!content) {
+                alert('暂无结果可复制');
+                return;
+            }
+            navigator.clipboard.writeText(content).then(() => {
+                alert('复制成功');
+            }).catch(() => {
+                outputText.select();
+                document.execCommand('copy');
+                alert('复制成功');
+            });
+        }
+
+        // 新增下载结果函数
+        function downloadOut() {
+            const content = outputText.value.trim();
+            const type = downloadType.value;
+            const fileName = `iptv-converted.${type}`;
+
+            if (!content) {
+                alert('暂无结果可下载');
+                return;
+            }
+
+            // 创建Blob并下载
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
 </body>
 </html>
