@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TXT ⇌ M3U 转换工具（保留📡）</title>
+    <title>TXT ⇌ M3U 转换工具（保留📡+自定义净化）</title>
     <style>
         * {
             margin: 0;
@@ -127,11 +127,16 @@
             min-height: 200px;
             background: #fafafa;
         }
+        .tips {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>TXT ⇌ M3U 转换工具（保留📡）</h1>
+        <h1>TXT ⇌ M3U 转换工具（保留📡+自定义净化）</h1>
 
         <div class="input-item">
             <label>EPG 地址 (TXT → M3U)</label>
@@ -145,7 +150,14 @@
 
         <div class="checkbox-item">
             <input type="checkbox" id="cleanName" checked>
-            <label for="cleanName">TXT转M3U 净化频道名（去 高清/HD 等）</label>
+            <label for="cleanName">TXT转M3U 净化频道名（保留卫视）</label>
+        </div>
+
+        <!-- 新增：自定义净化关键词输入框 -->
+        <div class="input-item">
+            <label>自定义移除关键词（用 | 分隔，例：高清|HD|超清）</label>
+            <input type="text" id="customKeywords" value="高清|HD|超清|频道" placeholder="输入要移除的词，竖线分隔">
+            <div class="tips">示例：输入 蓝光|4K|直播 会自动移除这些词，保留卫视</div>
         </div>
 
         <div class="upload-area">
@@ -180,6 +192,7 @@
         const epgUrl = document.getElementById('epgUrl');
         const logoUrl = document.getElementById('logoUrl');
         const cleanName = document.getElementById('cleanName');
+        const customKeywords = document.getElementById('customKeywords');
         const inputContent = document.getElementById('inputContent');
         const output = document.getElementById('output');
         const fileInput = document.getElementById('fileInput');
@@ -201,11 +214,14 @@
             reader.readAsText(file, 'utf-8');
         });
 
-        // 频道名净化
+        // ========== 核心修改：自定义净化关键词 ==========
         function cleanChannelName(name) {
             if (!cleanName.checked) return name;
+            // 获取输入的自定义关键词，转成正则表达式
+            const keywords = customKeywords.value.trim() || '高清|HD|超清|频道';
+            const reg = new RegExp(keywords, 'g');
             return name.replace(/\s+/g, '')
-                .replace(/高清|HD|超清|频道|卫视/g, '')
+                .replace(reg, '')  // 使用自定义关键词替换
                 .replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
         }
 
@@ -226,7 +242,6 @@
 
             lines.forEach(line => {
                 if (line.endsWith(',#genre#')) {
-                    // 直接读取带📡的分类名
                     currentGroup = line.replace(',#genre#', '').trim();
                     return;
                 }
@@ -237,7 +252,6 @@
 
                     const fmtName = cleanChannelName(name);
                     const logo = `${logoBase}${fmtName}.png`;
-                    // group-title直接用带📡的分类名
                     m3uContent += `#EXTINF:-1 tvg-id="${fmtName}" tvg-name="${fmtName}" tvg-logo="${logo}" group-title="${currentGroup}",${fmtName}\n`;
                     m3uContent += `${url}\n`;
                 }
@@ -261,9 +275,7 @@
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
                 if (line.startsWith('#EXTINF')) {
-                    // 提取带📡的group-title
                     const groupMatch = line.match(/group-title="([^"]+)"/);
-                    // 无分组时默认带📡
                     const group = groupMatch ? groupMatch[1].trim() : '默认分类📡';
                     
                     const nameMatch = line.match(/tvg-name="([^"]+)"/);
@@ -272,7 +284,6 @@
                     const url = lines[i + 1] || '';
 
                     if (group !== lastGroup) {
-                        // 生成带📡的分组行
                         txtContent += `${group},#genre#\n`;
                         lastGroup = group;
                     }
@@ -316,7 +327,7 @@
                 return;
             }
             const type = downloadType.value;
-            const blob = new Blob([content], { type: 'text/plain' });
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `iptv-converted.${type}`;
