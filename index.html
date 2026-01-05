@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TXT ⇌ M3U 转换工具（保留📡+自定义净化）</title>
+    <title>TXT ⇌ M3U 转换+链接批量替换工具</title>
     <style>
         * {
             margin: 0;
@@ -105,7 +105,7 @@
             background: #1677ff;
             color: #fff;
             border: none;
-            border-radius: 4px;
+	border-radius: 4px;
             cursor: pointer;
             min-width: 70px;
             font-size: 14px;
@@ -123,54 +123,67 @@
             border-radius: 4px;
             font-size: 13px;
         }
+        .full-width-btn {
+            width: 100%;
+            padding: 8px 15px;
+            background: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
         #output {
             min-height: 200px;
             background: #fafafa;
-        }
-        .tips {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>TXT ⇌ M3U 转换工具（保留📡+自定义净化）</h1>
+        <h1>TXT ⇌ M3U 转换+链接批量替换工具</h1>
 
         <div class="input-item">
             <label>EPG 地址 (TXT → M3U)</label>
             <input type="text" id="epgUrl" value="https://ie.erw.cc/all.xml.gz" placeholder="EPG地址">
         </div>
-
         <div class="input-item">
             <label>Logo 基础地址 (结尾带 /)</label>
             <input type="text" id="logoUrl" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO1@main/icon/" placeholder="https://xxx/LOGO/">
         </div>
-
         <div class="checkbox-item">
             <input type="checkbox" id="cleanName" checked>
-            <label for="cleanName">TXT转M3U 净化频道名（保留卫视）</label>
+            <label for="cleanName">净化频道名（去高清/HD/超清/频道，保留卫视）</label>
         </div>
 
-        <!-- 新增：自定义净化关键词输入框 -->
+        <!-- 链接替换 空白输入框 无任何示例文字 -->
         <div class="input-item">
-            <label>自定义移除关键词（用 | 分隔，例：高清|HD|超清）</label>
-            <input type="text" id="customKeywords" value="高清|HD|超清|频道" placeholder="输入要移除的词，竖线分隔">
-            <div class="tips">示例：输入 蓝光|4K|直播 会自动移除这些词，保留卫视</div>
+            <label>旧链接前缀</label>
+            <input type="text" id="oldLinkPrefix" value="" placeholder="">
+        </div>
+        <div class="input-item">
+            <label>新链接前缀</label>
+            <input type="text" id="newLinkPrefix" value="" placeholder="">
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="enableLinkReplace" checked>
+            <label for="enableLinkReplace">启用链接批量替换</label>
         </div>
 
+        <!-- 上传文件功能 -->
         <div class="upload-area">
             <label for="fileInput" class="upload-btn">上传文件</label>
             <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8">
             <span class="file-tip" id="fileTip">未选择文件</span>
         </div>
 
-        <textarea id="inputContent" placeholder="粘贴TXT/M3U内容，或上传文件"></textarea>
+        <textarea id="inputContent" placeholder="粘贴内容，或上传文件"></textarea>
 
+        <!-- ✅ 新增【只替换链接】按钮 + 原有转换/清空/复制 -->
         <div class="btn-group">
             <button onclick="txtToM3u()">TXT → M3U</button>
             <button onclick="m3uToTxt()">M3U → TXT</button>
+            <button onclick="onlyReplaceLink()">只替换链接</button>
             <button onclick="clearAll()">清空内容</button>
             <button onclick="copyResult()">复制结果</button>
         </div>
@@ -182,157 +195,126 @@
             </select>
         </div>
 
-        <button class="upload-btn" style="width:100%" onclick="downloadResult()">下载结果</button>
-
-        <textarea id="output" placeholder="转换结果在这里" readonly></textarea>
+        <button class="full-width-btn" onclick="downloadResult()">下载结果</button>
+        <textarea id="output" placeholder="处理结果展示在这里" readonly></textarea>
     </div>
 
     <script>
-        // 元素获取
         const epgUrl = document.getElementById('epgUrl');
         const logoUrl = document.getElementById('logoUrl');
         const cleanName = document.getElementById('cleanName');
-        const customKeywords = document.getElementById('customKeywords');
+        const oldLinkPrefix = document.getElementById('oldLinkPrefix');
+        const newLinkPrefix = document.getElementById('newLinkPrefix');
+        const enableLinkReplace = document.getElementById('enableLinkReplace');
         const inputContent = document.getElementById('inputContent');
         const output = document.getElementById('output');
         const fileInput = document.getElementById('fileInput');
         const fileTip = document.getElementById('fileTip');
         const downloadType = document.getElementById('downloadType');
 
-        // 监听文件上传
+        // 文件上传读取
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (!file) {
-                fileTip.textContent = '未选择文件';
-                return;
-            }
+            if (!file) {fileTip.textContent = '未选择文件';return;}
             fileTip.textContent = `已选：${file.name}`;
             const reader = new FileReader();
-            reader.onload = function(event) {
-                inputContent.value = event.target.result;
-            };
+            reader.onload = function(event) {inputContent.value = event.target.result;};
             reader.readAsText(file, 'utf-8');
         });
 
-        // ========== 核心修改：自定义净化关键词 ==========
+        // 频道名净化
         function cleanChannelName(name) {
             if (!cleanName.checked) return name;
-            // 获取输入的自定义关键词，转成正则表达式
-            const keywords = customKeywords.value.trim() || '高清|HD|超清|频道';
-            const reg = new RegExp(keywords, 'g');
-            return name.replace(/\s+/g, '')
-                .replace(reg, '')  // 使用自定义关键词替换
-                .replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
+            return name.replace(/\s+/g, '').replace(/高清|HD|超清|频道/g, '').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
         }
 
-        // ========== TXT转M3U（直接读取带📡的分类名） ==========
+        // 链接替换核心方法
+        function replaceLinkPrefix(url) {
+            if (!enableLinkReplace.checked || !oldLinkPrefix.value.trim()) return url;
+            return url.replace(oldLinkPrefix.value.trim(), newLinkPrefix.value.trim());
+        }
+
+        // TXT 转 M3U (带链接替换+净化)
         function txtToM3u() {
             const input = inputContent.value.trim();
-            if (!input) {
-                alert('请输入内容');
-                return;
-            }
-
+            if (!input) {alert('请输入/上传内容');return;}
             const epg = epgUrl.value.trim();
             const logoBase = logoUrl.value.trim().replace(/\/$/, '') + '/'; 
             let lines = input.split('\n').map(line => line.trim()).filter(line => line);
-            
             let m3uContent = `#EXTM3U x-tvg-url="${epg}"\n`;
             let currentGroup = ''; 
-
             lines.forEach(line => {
-                if (line.endsWith(',#genre#')) {
-                    currentGroup = line.replace(',#genre#', '').trim();
-                    return;
-                }
-
+                if (line.endsWith(',#genre#')) {currentGroup = line.replace(',#genre#', '').trim();return;}
                 if (line.includes(',')) {
                     const [name, url] = line.split(',').map(item => item.trim());
                     if (!name || !url) return;
-
                     const fmtName = cleanChannelName(name);
+                    const newUrl = replaceLinkPrefix(url);
                     const logo = `${logoBase}${fmtName}.png`;
-                    m3uContent += `#EXTINF:-1 tvg-id="${fmtName}" tvg-name="${fmtName}" tvg-logo="${logo}" group-title="${currentGroup}",${fmtName}\n`;
-                    m3uContent += `${url}\n`;
+                    m3uContent += `#EXTINF:-1 tvg-id="${fmtName}" tvg-name="${fmtName}" tvg-logo="${logo}" group-title="${currentGroup}",${fmtName}\n${newUrl}\n`;
                 }
             });
-
             output.value = m3uContent;
         }
 
-        // ========== M3U转TXT（保留📡标识） ==========
+        // M3U 转 TXT (带链接替换)
         function m3uToTxt() {
             const input = inputContent.value.trim();
-            if (!input) {
-                alert('请输入内容');
-                return;
-            }
-
+            if (!input) {alert('请输入/上传内容');return;}
             let lines = input.split('\n').map(line => line.trim()).filter(line => line);
             let txtContent = '';
             let lastGroup = ''; 
-
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
                 if (line.startsWith('#EXTINF')) {
                     const groupMatch = line.match(/group-title="([^"]+)"/);
                     const group = groupMatch ? groupMatch[1].trim() : '默认分类📡';
-                    
                     const nameMatch = line.match(/tvg-name="([^"]+)"/);
                     const name = nameMatch ? nameMatch[1].trim() : line.split(',').pop().trim();
-                    
-                    const url = lines[i + 1] || '';
-
-                    if (group !== lastGroup) {
-                        txtContent += `${group},#genre#\n`;
-                        lastGroup = group;
-                    }
-
-                    if (url.startsWith('http')) {
-                        txtContent += `${name},${url}\n`;
-                        i++; 
-                    }
+                    let url = lines[i + 1] || '';
+                    url = replaceLinkPrefix(url.trim());
+                    if (group !== lastGroup) {txtContent += `${group},#genre#\n`;lastGroup = group;}
+                    if (url.startsWith('http')) {txtContent += `${name},${url}\n`;i++;}
                 }
             }
-
             output.value = txtContent;
         }
 
-        function clearAll() {
-            inputContent.value = '';
-            output.value = '';
-            fileTip.textContent = '未选择文件';
-            fileInput.value = '';
+        // ✅ 新增 独立【只替换链接】 核心方法 - 不转换格式，只批量替换链接，原格式原封不动
+        function onlyReplaceLink() {
+            const input = inputContent.value.trim();
+            if (!input) {alert('请输入/上传内容');return;}
+            if (!enableLinkReplace.checked || !oldLinkPrefix.value.trim()) {
+                output.value = input;
+                alert('未填写替换链接前缀');
+                return;
+            }
+            const oldPre = oldLinkPrefix.value.trim();
+            const newPre = newLinkPrefix.value.trim();
+            const res = input.split('\n').map(line=>line.replace(oldPre,newPre)).join('\n');
+            output.value = res;
         }
 
+        // 清空全部
+        function clearAll() {
+            inputContent.value = '';output.value = '';fileTip.textContent = '未选择文件';fileInput.value = '';
+        }
+
+        // 复制结果
         function copyResult() {
             const content = output.value.trim();
-            if (!content) {
-                alert('暂无结果');
-                return;
-            }
-            navigator.clipboard.writeText(content).then(() => {
-                alert('复制成功');
-            }).catch(() => {
-                output.select();
-                document.execCommand('copy');
-                alert('复制成功');
-            });
+            if (!content) {alert('暂无结果');return;}
+            navigator.clipboard.writeText(content).then(()=>alert('复制成功')).catch(()=>{output.select();document.execCommand('copy');alert('复制成功');});
         }
 
+        // 下载结果
         function downloadResult() {
             const content = output.value.trim();
-            if (!content) {
-                alert('暂无结果');
-                return;
-            }
+            if (!content) {alert('暂无结果');return;}
             const type = downloadType.value;
             const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `iptv-converted.${type}`;
-            a.click();
-            URL.revokeObjectURL(a.href);
+            a.href = URL.createObjectURL(blob);a.download = `iptv.${type}`;a.click();URL.revokeObjectURL(a.href);
         }
     </script>
 </body>
