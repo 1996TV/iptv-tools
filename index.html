@@ -2,75 +2,87 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TXT ⇌ M3U 转换+链接批量替换工具</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background: #f5f5f5;
-            padding: 20px 15px;
+            padding: 12px 8px;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
             background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         h1 {
             text-align: center;
-            font-size: 18px;
+            font-size: 17px;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            font-weight: 600;
         }
         .input-item {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
         .input-item label {
             font-size: 14px;
-            color: #666;
+            color: #555;
             margin-bottom: 4px;
             display: block;
+            line-height: 1.4;
         }
         .input-item input {
             width: 100%;
-            padding: 8px 10px;
+            padding: 12px 10px;
             border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 13px;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fafafa;
+        }
+        .input-item input:focus {
+            outline: none;
+            border-color: #1677ff;
+            background: #fff;
         }
         .checkbox-item {
             display: flex;
             align-items: center;
-            margin: 8px 0;
-            font-size: 13px;
-            color: #666;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #555;
+            padding: 4px 0;
         }
         .checkbox-item input {
-            width: 14px;
-            height: 14px;
-            margin-right: 6px;
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            accent-color: #1677ff;
         }
         .upload-area {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin: 10px 0 15px;
+            gap: 8px;
+            margin: 12px 0 16px;
         }
         .upload-btn {
-            padding: 8px 15px;
+            padding: 12px 20px;
             background: #1677ff;
             color: #fff;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 15px;
+            white-space: nowrap;
         }
         #fileInput {
             display: none;
@@ -82,60 +94,122 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.2;
         }
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            min-height: 200px;
+            border-radius: 8px;
+            min-height: 180px;
             resize: vertical;
-            font-size: 13px;
-            margin-bottom: 15px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            background: #fafafa;
+            line-height: 1.5;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #1677ff;
+            background: #fff;
         }
         .btn-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
         .btn-group button {
             flex: 1;
-            padding: 8px 0;
+            padding: 12px 0;
             background: #1677ff;
             color: #fff;
             border: none;
-	border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            min-width: 70px;
+            min-width: 65px;
             font-size: 14px;
         }
         .btn-group button:hover {
             background: #0c66e4;
         }
         .download-select {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
         .download-select select {
             width: 100%;
-            padding: 8px 10px;
+            padding: 12px 10px;
             border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 13px;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fafafa;
+        }
+        .download-select select:focus {
+            outline: none;
+            border-color: #1677ff;
         }
         .full-width-btn {
             width: 100%;
-            padding: 8px 15px;
+            padding: 14px 0;
             background: #1677ff;
             color: #fff;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        .full-width-btn:hover {
+            background: #0c66e4;
         }
         #output {
-            min-height: 200px;
+            min-height: 180px;
             background: #fafafa;
+        }
+        /* 历史记录样式 */
+        .history-section {
+            margin: 20px 0 10px;
+        }
+        .history-title {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 8px;
+        }
+        .history-item {
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 4px;
+        }
+        .history-item:hover {
+            background: #f0f7ff;
+        }
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+        .clear-history-btn {
+            width: 100%;
+            padding: 8px 0;
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .clear-history-btn:hover {
+            background: #f0f0f0;
         }
     </style>
 </head>
@@ -149,14 +223,13 @@
         </div>
         <div class="input-item">
             <label>Logo 基础地址 (结尾带 /)</label>
-            <input type="text" id="logoUrl" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO1@main/icon/" placeholder="https://xxx/LOGO/">
+            <input type="text" id="logoUrl" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/" placeholder="https://xxx/LOGO/">
         </div>
         <div class="checkbox-item">
             <input type="checkbox" id="cleanName" checked>
-            <label for="cleanName">净化频道名（去高清/HD/超清/频道，保留卫视）</label>
+            <label for="cleanName">净化频道名（去高清/HD/超清）</label>
         </div>
 
-        <!-- 链接替换 空白输入框 无任何示例文字 -->
         <div class="input-item">
             <label>旧链接前缀</label>
             <input type="text" id="oldLinkPrefix" value="" placeholder="">
@@ -170,7 +243,6 @@
             <label for="enableLinkReplace">启用链接批量替换</label>
         </div>
 
-        <!-- 上传文件功能 -->
         <div class="upload-area">
             <label for="fileInput" class="upload-btn">上传文件</label>
             <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8">
@@ -179,7 +251,6 @@
 
         <textarea id="inputContent" placeholder="粘贴内容，或上传文件"></textarea>
 
-        <!-- ✅ 新增【只替换链接】按钮 + 原有转换/清空/复制 -->
         <div class="btn-group">
             <button onclick="txtToM3u()">TXT → M3U</button>
             <button onclick="m3uToTxt()">M3U → TXT</button>
@@ -197,6 +268,13 @@
 
         <button class="full-width-btn" onclick="downloadResult()">下载结果</button>
         <textarea id="output" placeholder="处理结果展示在这里" readonly></textarea>
+
+        <!-- 历史记录区域 -->
+        <div class="history-section">
+            <div class="history-title">历史记录</div>
+            <div class="history-list" id="historyList"></div>
+            <button class="clear-history-btn" onclick="clearHistory()">清空历史记录</button>
+        </div>
     </div>
 
     <script>
@@ -211,6 +289,54 @@
         const fileInput = document.getElementById('fileInput');
         const fileTip = document.getElementById('fileTip');
         const downloadType = document.getElementById('downloadType');
+        const historyList = document.getElementById('historyList');
+        const HISTORY_KEY = 'iptv_converter_history';
+        const MAX_HISTORY = 10;
+
+        // 初始化历史记录
+        function initHistory() {
+            const history = getHistory();
+            renderHistory(history);
+        }
+
+        // 获取历史记录
+        function getHistory() {
+            const historyStr = localStorage.getItem(HISTORY_KEY);
+            return historyStr ? JSON.parse(historyStr) : [];
+        }
+
+        // 保存历史记录
+        function saveHistory(inputVal, outputVal, type) {
+            const history = getHistory();
+            const time = new Date().toLocaleString();
+            const item = { input: inputVal, output: outputVal, type: type, time: time };
+            // 去重 + 限制数量
+            const newHistory = [item, ...history.filter(h => h.input !== inputVal)].slice(0, MAX_HISTORY);
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
+            renderHistory(newHistory);
+        }
+
+        // 渲染历史记录
+        function renderHistory(history) {
+            historyList.innerHTML = '';
+            history.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.textContent = `[${item.type}] ${item.time}`;
+                div.onclick = () => {
+                    inputContent.value = item.input;
+                    output.value = item.output;
+                };
+                historyList.appendChild(div);
+            });
+        }
+
+        // 清空历史记录
+        function clearHistory() {
+            localStorage.removeItem(HISTORY_KEY);
+            renderHistory([]);
+            alert('历史记录已清空');
+        }
 
         // 文件上传读取
         fileInput.addEventListener('change', function(e) {
@@ -222,10 +348,10 @@
             reader.readAsText(file, 'utf-8');
         });
 
-        // 频道名净化
+        // 频道名净化 - 仅去高清/HD/超清
         function cleanChannelName(name) {
             if (!cleanName.checked) return name;
-            return name.replace(/\s+/g, '').replace(/高清|HD|超清|频道/g, '').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
+            return name.replace(/\s+/g, '').replace(/高清|HD|超清/g, '').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
         }
 
         // 链接替换核心方法
@@ -234,7 +360,7 @@
             return url.replace(oldLinkPrefix.value.trim(), newLinkPrefix.value.trim());
         }
 
-        // TXT 转 M3U (带链接替换+净化)
+        // TXT 转 M3U (带链接替换+净化+历史记录)
         function txtToM3u() {
             const input = inputContent.value.trim();
             if (!input) {alert('请输入/上传内容');return;}
@@ -255,9 +381,10 @@
                 }
             });
             output.value = m3uContent;
+            saveHistory(input, m3uContent, 'TXT→M3U');
         }
 
-        // M3U 转 TXT (带链接替换)
+        // M3U 转 TXT (带链接替换+历史记录)
         function m3uToTxt() {
             const input = inputContent.value.trim();
             if (!input) {alert('请输入/上传内容');return;}
@@ -278,9 +405,10 @@
                 }
             }
             output.value = txtContent;
+            saveHistory(input, txtContent, 'M3U→TXT');
         }
 
-        // ✅ 新增 独立【只替换链接】 核心方法 - 不转换格式，只批量替换链接，原格式原封不动
+        // 只替换链接 (带历史记录)
         function onlyReplaceLink() {
             const input = inputContent.value.trim();
             if (!input) {alert('请输入/上传内容');return;}
@@ -293,18 +421,26 @@
             const newPre = newLinkPrefix.value.trim();
             const res = input.split('\n').map(line=>line.replace(oldPre,newPre)).join('\n');
             output.value = res;
+            saveHistory(input, res, '仅替换链接');
         }
 
         // 清空全部
         function clearAll() {
-            inputContent.value = '';output.value = '';fileTip.textContent = '未选择文件';fileInput.value = '';
+            inputContent.value = '';
+            output.value = '';
+            fileTip.textContent = '未选择文件';
+            fileInput.value = '';
         }
 
         // 复制结果
         function copyResult() {
             const content = output.value.trim();
             if (!content) {alert('暂无结果');return;}
-            navigator.clipboard.writeText(content).then(()=>alert('复制成功')).catch(()=>{output.select();document.execCommand('copy');alert('复制成功');});
+            navigator.clipboard.writeText(content).then(()=>alert('复制成功')).catch(()=>{
+                output.select();
+                document.execCommand('copy');
+                alert('复制成功');
+            });
         }
 
         // 下载结果
@@ -314,8 +450,14 @@
             const type = downloadType.value;
             const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);a.download = `iptv.${type}`;a.click();URL.revokeObjectURL(a.href);
+            a.href = URL.createObjectURL(blob);
+            a.download = `iptv.${type}`;
+            a.click();
+            URL.revokeObjectURL(a.href);
         }
+
+        // 页面加载初始化历史记录
+        window.onload = initHistory;
     </script>
 </body>
 </html>
