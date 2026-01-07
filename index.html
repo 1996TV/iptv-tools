@@ -318,7 +318,7 @@
         </div>
         <div class="checkbox-item">
             <input type="checkbox" id="enableLinkReplace" checked>
-            <label>启用链接替换</label>
+            <label>启用链接替换（转换文件时自动生效）</label>
         </div>
         <div class="upload">
             <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8" onchange="readFile(this)">
@@ -328,7 +328,7 @@
         <div class="btn-group">
             <button onclick="txtToM3u()">TXT → M3U</button>
             <button onclick="m3uToTxt()">M3U → TXT</button>
-            <button onclick="onlyReplaceLink()">只替换链接</button>
+            <button onclick="onlyReplaceLink()">只替换链接（单独使用）</button>
             <button onclick="clearAll()">清空内容</button>
         </div>
         <div class="func-btn">
@@ -357,37 +357,26 @@
         const DEFAULT_CLEAN_KEYWORDS = ["高清", "HD", "超清"];
         const CONFIG_STORAGE_KEY = "iptv_tool_config";
 
-        // ========== 核心修改：页面加载时重置状态，不读取缓存 ==========
+        // ========== 页面加载时重置状态，不读取缓存 ==========
         window.onload = function() {
-            // 1. 清除localStorage中的配置记录
             localStorage.removeItem(CONFIG_STORAGE_KEY);
-            // 2. 替换历史记录，避免后退恢复旧状态
             history.replaceState(null, null, window.location.href);
-            // 3. 强制设置默认地址
             document.getElementById('epgUrl').value = DEFAULT_EPG_URL;
             document.getElementById('logoUrlInput').value = DEFAULT_LOGO_URL;
-            // 4. 清空所有输入框和文本域
             document.getElementById('searchKey').value = '';
             document.getElementById('customCleanKeywords').value = '';
             document.getElementById('oldLinkPrefix').value = '';
             document.getElementById('newLinkPrefix').value = '';
             document.getElementById('inputContent').value = '';
             document.getElementById('output').value = '';
-            // 5. 重置复选框为默认状态
             document.getElementById('cleanName').checked = true;
             document.getElementById('removeReplay').checked = true;
             document.getElementById('enableLinkReplace').checked = true;
         }
 
-        // ========== 核心修改：禁用配置存储功能 ==========
-        function saveConfig() {
-            // 不执行任何存储操作，刷新后不保留记录
-            return;
-        }
-        function loadConfig() {
-            // 不执行任何读取操作，刷新后不恢复记录
-            return;
-        }
+        // ========== 禁用配置存储功能 ==========
+        function saveConfig() { return; }
+        function loadConfig() { return; }
 
         // ========== LOGO放大预览功能 ==========
         function openLogoPreview(imgUrl) {
@@ -486,9 +475,17 @@
             const reader = new FileReader();
             reader.onload = e => {
                 document.getElementById('inputContent').value = e.target.result;
-                // 移除saveConfig调用，不存储上传内容
             };
             reader.readAsText(file);
+        }
+
+        // ========== 新增：统一链接替换函数 ==========
+        function replaceLink(url) {
+            if (!document.getElementById('enableLinkReplace').checked) return url;
+            const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
+            const newPrefix = document.getElementById('newLinkPrefix').value.trim();
+            if (!oldPrefix || !newPrefix) return url;
+            return url.replace(new RegExp(oldPrefix, 'g'), newPrefix);
         }
 
         // 安卓下载优化
@@ -570,7 +567,7 @@
             return /(回看|回放|时移|Replay|Catchup|重播)/i.test(n);
         }
 
-        // 转换功能
+        // ========== TXT→M3U：自动替换链接 ==========
         function txtToM3u() {
             const epg = document.getElementById('epgUrl').value.trim();
             const logoBase = document.getElementById('logoUrlInput').value.replace(/\/$/, '') + '/';
@@ -592,18 +589,14 @@
                 if (document.getElementById('removeReplay').checked && isReplay(name)) return;
                 
                 const cleanName = cleanNameFn(name);
-                let playUrl = url;
-                if (document.getElementById('enableLinkReplace').checked) {
-                    const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
-                    const newPrefix = document.getElementById('newLinkPrefix').value.trim();
-                    if (oldPrefix && newPrefix) playUrl = playUrl.replace(oldPrefix, newPrefix);
-                }
+                // 自动替换链接（根据开关状态）
+                const playUrl = replaceLink(url);
                 output += `#EXTINF:-1 tvg-name="${cleanName}" tvg-logo="${logoBase}${cleanName}.png" group-title="${group}",${cleanName}\n${playUrl}\n`;
             });
             document.getElementById('output').value = output;
-            // 移除saveConfig调用，不存储转换结果
         }
 
+        // ========== M3U→TXT：自动替换链接 ==========
         function m3uToTxt() {
             const input = document.getElementById('inputContent').value.trim();
             if (!input) return alert('请输入M3U内容！');
@@ -627,20 +620,17 @@
                         currentGroup = group;
                     }
                     let url = lines[i + 1] ? lines[i + 1].trim() : '';
-                    if (document.getElementById('enableLinkReplace').checked) {
-                        const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
-                        const newPrefix = document.getElementById('newLinkPrefix').value.trim();
-                        if (oldPrefix && newPrefix) url = url.replace(oldPrefix, newPrefix);
-                    }
+                    // 自动替换链接（根据开关状态）
+                    url = replaceLink(url);
                     const cleanName = cleanNameFn(name);
                     output += `${cleanName},${url}\n`;
                     i++;
                 }
             }
             document.getElementById('output').value = output;
-            // 移除saveConfig调用，不存储转换结果
         }
 
+        // ========== 单独替换链接（保留原有功能） ==========
         function onlyReplaceLink() {
             const input = document.getElementById('inputContent').value.trim();
             if (!input) return alert('请输入内容！');
@@ -650,13 +640,11 @@
             
             let output = input.replace(new RegExp(oldPrefix, 'g'), newPrefix);
             document.getElementById('output').value = output;
-            // 移除saveConfig调用，不存储替换结果
         }
 
         function clearAll() {
             document.getElementById('inputContent').value = '';
             document.getElementById('output').value = '';
-            // 移除saveConfig调用，不存储清空状态
         }
     </script>
 </body>
