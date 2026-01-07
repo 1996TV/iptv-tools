@@ -137,7 +137,7 @@
             background: #1677ff;
             color: #fff;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             white-space: nowrap;
         }
@@ -286,7 +286,12 @@
             <div id="logoResult" class="logo-result"></div>
         </div>
 
-        <!-- EPG地址 -->
+        <!-- 新增：繁体转简体开关 -->
+        <div class="checkbox-item">
+            <input type="checkbox" id="enableC2S" checked>
+            <label>自动将繁体中文转换为简体中文（含上传文件）</label>
+        </div>
+
         <div class="input-item">
             <label>EPG 地址</label>
             <input id="epgUrl" placeholder="请输入EPG地址" value="https://ie.erw.cc/all.xml.gz">
@@ -360,6 +365,7 @@
         const repoName = "LOGO";
         const cdnBase = `https://cdn.jsdelivr.net/gh/${repoOwner}/${repoName}@main/`;
         let allLogoFiles = [];
+        let logoNameMap = {}; // 存储LOGO名称（小写）→ 原文件名的映射
 
         // 常量配置
         const DEFAULT_EPG_URL = "https://ie.erw.cc/all.xml.gz";
@@ -367,47 +373,89 @@
         const DEFAULT_CLEAN_KEYWORDS = ["高清", "HD", "超清"];
         const CONFIG_STORAGE_KEY = "iptv_tool_config";
 
-        // 页面加载初始化
-        window.onload = function() {
-            loadConfig();
-            // 强制设置默认地址
-            if (!document.getElementById('epgUrl').value) {
-                document.getElementById('epgUrl').value = DEFAULT_EPG_URL;
+        // ========== 新增：繁体转简体映射表 ==========
+        const 繁简映射表 = {
+            "愛":"爱","灣":"湾","顯":"显","數":"数","據":"据","檔":"档","構":"构","過":"过","與":"与","將":"将",
+            "進":"进","發":"发","電":"电","視":"视","頻":"频","節":"节","臺":"台","戲":"戏","學":"学","會":"会",
+            "員":"员","備":"备","設":"设","開":"开","關":"关","機":"机","類":"类","組":"组","圖":"图","標":"标",
+            "題":"题","認":"认","識":"识","産":"产","業":"业","選":"选","擇":"择","獲":"获","資":"资","訊":"讯",
+            "處":"处","管":"管","運":"运","狀":"状","態":"态","係":"系","統":"统","動":"动","畫":"画","兒":"儿",
+            "萬":"万","億":"亿","餘":"余","復":"复","雜":"杂","層":"层","體":"体","總":"总","線":"线","號":"号",
+            "價":"价","響":"响","應":"应","強":"强","優":"优","質":"质","錄":"录","播":"播","影":"影","娛":"娱",
+            "樂":"乐","育":"育","新":"新","聞":"闻","財":"财","經":"经","藝":"艺","漫":"漫","教":"教","少":"少",
+            "英":"英","語":"语","國":"国","際":"际","衛":"卫","福":"福","利":"利","公":"公","共":"共","道":"道",
+            "星":"星","有":"有","碼":"码","高":"高","清":"清","超":"超","級":"级","質":"质","立":"立","3":"3",
+            "D":"D","藍":"蓝","光":"光","原":"原","聲":"声","環":"环","繞":"绕","左":"左","右":"右","雙":"双",
+            "多":"多","音":"音","軌":"轨","中":"中","文":"文","粵":"粤","台":"台","日":"日","韓":"韩","法":"法",
+            "德":"德","俄":"俄","西":"西","班":"班","牙":"牙","葡":"葡","萄":"萄","阿":"阿","拉":"拉","伯":"伯",
+            "印":"印","度":"度","泰":"泰","越":"越","南":"南","馬":"马","來":"来","亞":"亚","菲":"菲","律":"律",
+            "賓":"宾","印尼":"印尼","麥":"麦","哲":"哲","倫":"伦","偵":"侦","查":"查","紀":"纪","實":"实"
+        };
+
+        // 新增：繁体转简体核心函数
+        function traditionalToSimplified(str) {
+            if (!str || typeof str !== "string") return str;
+            let result = "";
+            for (let i = 0; i < str.length; i++) {
+                result += 繁简映射表[str[i]] || str[i];
             }
-            if (!document.getElementById('logoUrlInput').value) {
-                document.getElementById('logoUrlInput').value = DEFAULT_LOGO_URL;
+            return result;
+        }
+
+        // ========== 新增：LOGO名称映射表加载 ==========
+        async function loadLogoNameMap() {
+            try {
+                if (allLogoFiles.length === 0) {
+                    await fetchLogoFiles();
+                }
+                // 建立LOGO名称（小写）→ 原文件名的映射
+                logoNameMap = {};
+                allLogoFiles.forEach(file => {
+                    const logoName = file.name.replace('.png', '');
+                    const normalizedName = logoName.toLowerCase().replace(/\s+/g, '').replace(/[^\w]/g, '');
+                    logoNameMap[normalizedName] = file.name;
+                });
+            } catch (error) {
+                console.error('加载LOGO名称映射失败', error);
             }
         }
 
-        // ========== 配置存储功能 ==========
-        // 保存配置
+        // 页面加载初始化 - 核心修改：不加载本地配置，刷新不保留记录
+        window.onload = async function() {
+            // 1. 清除localStorage中的配置，刷新后不再保留
+            localStorage.removeItem(CONFIG_STORAGE_KEY);
+            // 2. 替换当前历史记录，避免后退到旧状态
+            history.replaceState(null, null, window.location.href);
+            // 3. 预加载LOGO映射表
+            await loadLogoNameMap();
+            // 4. 强制设置默认地址，不读取缓存
+            document.getElementById('epgUrl').value = DEFAULT_EPG_URL;
+            document.getElementById('logoUrlInput').value = DEFAULT_LOGO_URL;
+            // 5. 清除所有输入框和文本域内容
+            document.getElementById('searchKey').value = '';
+            document.getElementById('customCleanKeywords').value = '';
+            document.getElementById('oldLinkPrefix').value = '';
+            document.getElementById('newLinkPrefix').value = '';
+            document.getElementById('inputContent').value = '';
+            document.getElementById('output').value = '';
+            // 6. 重置复选框为默认状态
+            document.getElementById('enableC2S').checked = true;
+            document.getElementById('cleanName').checked = true;
+            document.getElementById('removeReplay').checked = true;
+            document.getElementById('enableLinkReplace').checked = true;
+        }
+
+        // ========== 修改：配置存储功能 - 完全禁用localStorage，刷新不保留记录 ==========
+        // 保存配置：改为空函数，不存储任何数据
         function saveConfig() {
-            const config = {
-                searchKey: document.getElementById('searchKey').value,
-                customCleanKeywords: document.getElementById('customCleanKeywords').value,
-                cleanName: document.getElementById('cleanName').checked,
-                removeReplay: document.getElementById('removeReplay').checked,
-                oldLinkPrefix: document.getElementById('oldLinkPrefix').value,
-                newLinkPrefix: document.getElementById('newLinkPrefix').value,
-                enableLinkReplace: document.getElementById('enableLinkReplace').checked,
-                inputContent: document.getElementById('inputContent').value,
-                outputContent: document.getElementById('output').value
-            };
-            localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
+            // 不执行任何存储操作，刷新后不保留记录
+            return;
         }
 
-        // 加载配置
+        // 加载配置：改为空函数，不读取任何数据
         function loadConfig() {
-            const config = JSON.parse(localStorage.getItem(CONFIG_STORAGE_KEY) || '{}');
-            document.getElementById('searchKey').value = config.searchKey || '';
-            document.getElementById('customCleanKeywords').value = config.customCleanKeywords || '';
-            document.getElementById('cleanName').checked = config.cleanName !== undefined ? config.cleanName : true;
-            document.getElementById('removeReplay').checked = config.removeReplay !== undefined ? config.removeReplay : true;
-            document.getElementById('oldLinkPrefix').value = config.oldLinkPrefix || '';
-            document.getElementById('newLinkPrefix').value = config.newLinkPrefix || '';
-            document.getElementById('enableLinkReplace').checked = config.enableLinkReplace !== undefined ? config.enableLinkReplace : true;
-            document.getElementById('inputContent').value = config.inputContent || '';
-            document.getElementById('output').value = config.outputContent || '';
+            // 不执行任何读取操作，刷新后不保留记录
+            return;
         }
 
         // ========== LOGO放大预览功能 ==========
@@ -451,7 +499,6 @@
                 
                 if (matchFiles.length === 0) {
                     resultBox.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">未找到匹配的LOGO文件</p>';
-                    saveConfig();
                     return;
                 }
 
@@ -473,7 +520,6 @@
                     `;
                 });
                 resultBox.innerHTML = resultHtml;
-                saveConfig();
 
             } catch (error) {
                 loading.style.display = 'none';
@@ -511,15 +557,45 @@
                 });
         }
 
+        // 文件上传函数 - 新增繁体转简体处理
         function readFile(input) {
             const file = input.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = e => {
-                document.getElementById('inputContent').value = e.target.result;
-                saveConfig();
+                let content = e.target.result;
+                // 新增：繁转简处理
+                if (document.getElementById('enableC2S').checked) {
+                    content = traditionalToSimplified(content);
+                }
+                document.getElementById('inputContent').value = content;
             };
-            reader.readAsText(file);
+            // 强制UTF-8编码读取
+            reader.readAsText(file, 'utf-8');
+        }
+
+        // LOGO名称不分大小写匹配核心函数
+        function getMatchedLogoUrl(channelName) {
+            const logoBase = document.getElementById('logoUrlInput').value.replace(/\/$/, '') + '/';
+            // 标准化频道名：繁转简 → 小写 → 去空格和特殊字符
+            let normalizedChannel = traditionalToSimplified(channelName);
+            normalizedChannel = normalizedChannel.toLowerCase().replace(/\s+/g, '').replace(/[^\w]/g, '');
+
+            // 1. 精确匹配
+            if (logoNameMap[normalizedChannel]) {
+                return logoBase + logoNameMap[normalizedChannel];
+            }
+
+            // 2. 模糊匹配
+            const matchedKey = Object.keys(logoNameMap).find(logoKey => {
+                return logoKey.includes(normalizedChannel) || normalizedChannel.includes(logoKey);
+            });
+            if (matchedKey) {
+                return logoBase + logoNameMap[matchedKey];
+            }
+
+            // 3. 无匹配时返回默认LOGO地址
+            return logoBase + 'default.png';
         }
 
         // 安卓下载优化
@@ -584,8 +660,12 @@
                 });
         }
 
-        // 自定义净化频道名函数
+        // 净化频道名函数 - 新增繁转简处理
         function cleanNameFn(n) {
+            // 新增：先繁转简
+            if (document.getElementById('enableC2S').checked) {
+                n = traditionalToSimplified(n);
+            }
             if (!document.getElementById('cleanName').checked) return n;
             
             let customKeywords = document.getElementById('customCleanKeywords').value.split(',').map(k => k.trim()).filter(k => k);
@@ -602,10 +682,9 @@
             return /(回看|回放|时移|Replay|Catchup|重播)/i.test(n);
         }
 
-        // 转换功能
+        // 核心优化：TXT转M3U函数 - 改用LOGO不分大小写匹配
         function txtToM3u() {
             const epg = document.getElementById('epgUrl').value.trim();
-            const logoBase = document.getElementById('logoUrlInput').value.replace(/\/$/, '') + '/';
             const input = document.getElementById('inputContent').value.trim();
             if (!input) return alert('请输入TXT内容！');
             
@@ -618,6 +697,10 @@
                 if (!l) return;
                 if (l.endsWith(',#genre#')) {
                     group = l.replace(',#genre#', '');
+                    // 新增：分组名繁转简
+                    if (document.getElementById('enableC2S').checked) {
+                        group = traditionalToSimplified(group);
+                    }
                     return;
                 }
                 if (!l.includes(',')) return;
@@ -626,6 +709,8 @@
                 if (document.getElementById('removeReplay').checked && isReplay(name)) return;
                 
                 const cleanName = cleanNameFn(name);
+                // 核心修改：改用不分大小写的LOGO匹配函数
+                const logoUrl = getMatchedLogoUrl(cleanName);
                 let playUrl = url;
                 if (document.getElementById('enableLinkReplace').checked) {
                     const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
@@ -633,11 +718,10 @@
                     if (oldPrefix && newPrefix) playUrl = playUrl.replace(oldPrefix, newPrefix);
                 }
 
-                output += `#EXTINF:-1 tvg-name="${cleanName}" tvg-logo="${logoBase}${cleanName}.png" group-title="${group}",${cleanName}\n${playUrl}\n`;
+                output += `#EXTINF:-1 tvg-name="${cleanName}" tvg-logo="${logoUrl}" group-title="${group}",${cleanName}\n${playUrl}\n`;
             });
 
             document.getElementById('output').value = output;
-            saveConfig();
         }
 
         function m3uToTxt() {
@@ -661,9 +745,17 @@
                         continue;
                     }
 
-                    if (group !== currentGroup) {
-                        output += `${group},#genre#\n`;
-                        currentGroup = group;
+                    // 新增：分组名和频道名繁转简
+                    let simplifiedGroup = group;
+                    let simplifiedName = name;
+                    if (document.getElementById('enableC2S').checked) {
+                        simplifiedGroup = traditionalToSimplified(simplifiedGroup);
+                        simplifiedName = traditionalToSimplified(simplifiedName);
+                    }
+
+                    if (simplifiedGroup !== currentGroup) {
+                        output += `${simplifiedGroup},#genre#\n`;
+                        currentGroup = simplifiedGroup;
                     }
 
                     let url = lines[i + 1] ? lines[i + 1].trim() : '';
@@ -673,14 +765,13 @@
                         if (oldPrefix && newPrefix) url = url.replace(oldPrefix, newPrefix);
                     }
 
-                    const cleanName = cleanNameFn(name);
+                    const cleanName = cleanNameFn(simplifiedName);
                     output += `${cleanName},${url}\n`;
                     i++;
                 }
             }
 
             document.getElementById('output').value = output;
-            saveConfig();
         }
 
         function onlyReplaceLink() {
@@ -691,14 +782,16 @@
             if (!oldPrefix || !newPrefix) return alert('请填写完整的新旧链接前缀！');
             
             let output = input.replace(new RegExp(oldPrefix, 'g'), newPrefix);
+            // 新增：繁转简处理
+            if (document.getElementById('enableC2S').checked) {
+                output = traditionalToSimplified(output);
+            }
             document.getElementById('output').value = output;
-            saveConfig();
         }
 
         function clearAll() {
             document.getElementById('inputContent').value = '';
             document.getElementById('output').value = '';
-            saveConfig();
         }
     </script>
 </body>
