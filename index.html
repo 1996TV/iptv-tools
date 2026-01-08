@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
-    <title>IPTV工具集 - LOGO模糊搜索</title>
+    <title>IPTV工具集 - 分面板版</title>
     <style>
         * {
             margin: 0;
@@ -18,11 +18,42 @@
             max-width: 100%;
             margin: 0 auto;
         }
-        .container {
+        /* 新增：面板切换按钮 */
+        .tab-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            border-radius: 8px;
+            background: #e5e5e5;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: #1677ff;
+            color: #fff;
+        }
+        /* 面板容器 */
+        .panel-container {
+            width: 100%;
+        }
+        .panel {
+            display: none;
             background: #fff;
             padding: 20px 15px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+        .panel.active {
+            display: block;
         }
         h1 {
             font-size: 18px;
@@ -134,12 +165,12 @@
         .logo-item .copy-btn {
             padding: 4px 12px;
             font-size: 12px;
-            background: #1677ff;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             white-space: nowrap;
+            background: #1677ff;
         }
         /* 输入项样式 - 移动端适配 */
         .input-item {
@@ -272,72 +303,87 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>IPTV工具集 - LOGO模糊搜索</h1>
-        <!-- LOGO模糊搜索模块 -->
-        <div class="logo-search">
-            <h3>频道LOGO模糊搜索</h3>
-            <div class="search-bar">
-                <input type="text" id="searchKey" placeholder="输入关键词（如CCTV、4K、BBC）">
-                <button onclick="fuzzySearchLogo()">模糊搜索</button>
-            </div>
-            <div class="loading" id="loading">正在拉取LOGO列表...</div>
-            <div id="logoResult" class="logo-result"></div>
-        </div>
-        <!-- EPG地址 -->
-        <div class="input-item">
-            <label>EPG 地址</label>
-            <input id="epgUrl" placeholder="请输入EPG地址" value="https://ie.erw.cc/all.xml.gz">
-        </div>
-        <!-- Logo基础地址 -->
-        <div class="input-item">
-            <label>Logo 基础地址（结尾 /）</label>
-            <input id="logoUrlInput" placeholder="请输入Logo基础地址" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/">
-        </div>
-        <!-- 自定义净化关键词输入框 -->
-        <div class="input-item">
-            <label>自定义净化关键词</label>
-            <input id="customCleanKeywords" placeholder="多个关键词用英文逗号分隔，如:测试,备用,无效">
-            <div class="custom-clean-tip">提示：输入后会和默认关键词（高清|HD|超清）一起过滤频道名</div>
-        </div>
-        <div class="checkbox-item">
-            <input type="checkbox" id="cleanName" checked>
-            <label>净化频道名</label>
-        </div>
-        <div class="checkbox-item">
-            <input type="checkbox" id="removeReplay" checked>
-            <label>去除回看 / 回放 / 时移频道</label>
-        </div>
-        <div class="input-item">
-            <label>旧链接前缀</label>
-            <input id="oldLinkPrefix" placeholder="如http://old.com/">
-        </div>
-        <div class="input-item">
-            <label>新链接前缀</label>
-            <input id="newLinkPrefix" placeholder="如http://new.com/">
-        </div>
-        <div class="checkbox-item">
-            <input type="checkbox" id="enableLinkReplace" checked>
-            <label>启用链接替换（转换文件时自动生效）</label>
-        </div>
-        <div class="upload">
-            <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8" onchange="readFile(this)">
-        </div>
-        <textarea id="inputContent" placeholder="粘贴或上传 TXT / M3U 内容"></textarea>
-        
-        <div class="btn-group">
-            <button onclick="txtToM3u()">TXT → M3U</button>
-            <button onclick="m3uToTxt()">M3U → TXT</button>
-            <button onclick="onlyReplaceLink()">只替换链接（单独使用）</button>
-            <button onclick="clearAll()">清空内容</button>
-        </div>
-        <div class="func-btn">
-            <button onclick="downloadResult()">下载结果</button>
-            <button onclick="copyResult()">复制结果</button>
-        </div>
-        <div class="download-tip">安卓手机请开启浏览器存储权限，下载后在通知栏查看</div>
-        <textarea id="output" placeholder="处理结果" readonly></textarea>
+    <!-- 新增：面板切换按钮 -->
+    <div class="tab-group">
+        <button class="tab-btn active" onclick="switchTab('logo-panel')">LOGO模糊搜索</button>
+        <button class="tab-btn" onclick="switchTab('iptv-panel')">IPTV文件转换</button>
     </div>
+
+    <!-- 面板容器 -->
+    <div class="panel-container">
+        <!-- LOGO搜索面板 -->
+        <div class="panel active" id="logo-panel">
+            <h1>IPTV工具集 - LOGO模糊搜索</h1>
+            <div class="logo-search">
+                <h3>频道LOGO模糊搜索</h3>
+                <div class="search-bar">
+                    <input type="text" id="searchKey" placeholder="输入关键词（如CCTV、4K、BBC）">
+                    <button onclick="fuzzySearchLogo()">模糊搜索</button>
+                </div>
+                <div class="loading" id="loading">正在拉取LOGO列表...</div>
+                <div id="logoResult" class="logo-result"></div>
+            </div>
+        </div>
+
+        <!-- IPTV转换面板 -->
+        <div class="panel" id="iptv-panel">
+            <h1>IPTV工具集 - 文件转换</h1>
+            <!-- EPG地址：修改默认值 -->
+            <div class="input-item">
+                <label>EPG 地址</label>
+                <input id="epgUrl" placeholder="请输入EPG地址" value="https://epg.catvod.com/epg.xml">
+            </div>
+            <!-- Logo基础地址 -->
+            <div class="input-item">
+                <label>Logo 基础地址（结尾 /）</label>
+                <input id="logoUrlInput" placeholder="请输入Logo基础地址" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/">
+            </div>
+            <!-- 自定义净化关键词输入框 -->
+            <div class="input-item">
+                <label>自定义净化关键词</label>
+                <input id="customCleanKeywords" placeholder="多个关键词用英文逗号分隔，如:测试,备用,无效">
+                <div class="custom-clean-tip">提示：输入后会和默认关键词（高清|HD|超清）一起过滤频道名</div>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="cleanName" checked>
+                <label>净化频道名</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="removeReplay" checked>
+                <label>去除回看 / 回放 / 时移频道</label>
+            </div>
+            <div class="input-item">
+                <label>旧链接前缀</label>
+                <input id="oldLinkPrefix" placeholder="如http://old.com/">
+            </div>
+            <div class="input-item">
+                <label>新链接前缀</label>
+                <input id="newLinkPrefix" placeholder="如http://new.com/">
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="enableLinkReplace" checked>
+                <label>启用链接替换（转换文件时自动生效）</label>
+            </div>
+            <div class="upload">
+                <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8" onchange="readFile(this)">
+            </div>
+            <textarea id="inputContent" placeholder="粘贴或上传 TXT / M3U 内容"></textarea>
+            
+            <div class="btn-group">
+                <button onclick="txtToM3u()">TXT → M3U</button>
+                <button onclick="m3uToTxt()">M3U → TXT</button>
+                <button onclick="onlyReplaceLink()">只替换链接（单独使用）</button>
+                <button onclick="clearAll()">清空内容</button>
+            </div>
+            <div class="func-btn">
+                <button onclick="downloadResult()">下载结果</button>
+                <button onclick="copyResult()">复制结果</button>
+            </div>
+            <div class="download-tip">安卓手机请开启浏览器存储权限，下载后在通知栏查看</div>
+            <textarea id="output" placeholder="处理结果" readonly></textarea>
+        </div>
+    </div>
+
     <!-- LOGO放大预览弹窗 -->
     <div class="logo-preview-modal" id="logoPreviewModal" onclick="closeLogoPreview()">
         <div class="logo-preview-content" onclick="event.stopPropagation()">
@@ -345,17 +391,33 @@
             <button class="logo-preview-close" onclick="closeLogoPreview()">×</button>
         </div>
     </div>
+
     <script>
         // 仓库配置
         const repoOwner = "1996TV";
         const repoName = "LOGO";
         const cdnBase = `https://cdn.jsdelivr.net/gh/${repoOwner}/${repoName}@main/`;
         let allLogoFiles = [];
-        // 常量配置
-        const DEFAULT_EPG_URL = "https://ie.erw.cc/all.xml.gz";
+        // 常量配置：修改EPG默认值
+        const DEFAULT_EPG_URL = "https://epg.catvod.com/epg.xml";
         const DEFAULT_LOGO_URL = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/";
         const DEFAULT_CLEAN_KEYWORDS = ["高清", "HD", "超清"];
         const CONFIG_STORAGE_KEY = "iptv_tool_config";
+
+        // ========== 新增：面板切换核心函数 ==========
+        function switchTab(panelId) {
+            // 切换按钮状态
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 切换面板显示
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(panelId).classList.add('active');
+        }
 
         // ========== 页面加载时重置状态，不读取缓存 ==========
         window.onload = function() {
@@ -479,7 +541,7 @@
             reader.readAsText(file);
         }
 
-        // ========== 新增：统一链接替换函数 ==========
+        // ========== 统一链接替换函数 ==========
         function replaceLink(url) {
             if (!document.getElementById('enableLinkReplace').checked) return url;
             const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
