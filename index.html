@@ -303,16 +303,16 @@
     </style>
 </head>
 <body>
-    <!-- 新增：面板切换按钮 -->
+    <!-- 核心修改：互换面板切换按钮的顺序 + 调整默认激活状态 -->
     <div class="tab-group">
-        <button class="tab-btn active" onclick="switchTab('logo-panel')">LOGO模糊搜索</button>
-        <button class="tab-btn" onclick="switchTab('iptv-panel')">IPTV文件转换</button>
+        <button class="tab-btn active" onclick="switchTab('iptv-panel')">IPTV文件转换</button>
+        <button class="tab-btn" onclick="switchTab('logo-panel')">LOGO模糊搜索</button>
     </div>
 
     <!-- 面板容器 -->
     <div class="panel-container">
         <!-- LOGO搜索面板 -->
-        <div class="panel active" id="logo-panel">
+        <div class="panel" id="logo-panel">
             <h1>IPTV工具集 - LOGO模糊搜索</h1>
             <div class="logo-search">
                 <h3>频道LOGO模糊搜索</h3>
@@ -325,8 +325,8 @@
             </div>
         </div>
 
-        <!-- IPTV转换面板 -->
-        <div class="panel" id="iptv-panel">
+        <!-- IPTV转换面板 - 调整为默认显示 -->
+        <div class="panel active" id="iptv-panel">
             <h1>IPTV工具集 - 文件转换</h1>
             <!-- EPG地址：修改默认值 -->
             <div class="input-item">
