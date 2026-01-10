@@ -351,7 +351,7 @@
             color: #999;
             margin-top: 4px;
         }
-        /* LOGO放大预览弹窗 */
+        /* LOGO放大预览弹窗 - 强制关闭按钮在右上角 */
         .logo-preview-modal {
             position: fixed;
             top: 0;
@@ -369,17 +369,19 @@
             max-width: 90%;
             max-height: 80%;
             position: relative;
+            display: inline-block;
         }
         .logo-preview-img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             border-radius: 8px;
+            display: block;
         }
         .logo-preview-close {
-            position: absolute;
-            top: -15px;
-            right: -15px;
+            position: absolute !important;
+            top: -15px !important;
+            right: -15px !important;
             width: 30px;
             height: 30px;
             border-radius: 50%;
@@ -392,12 +394,11 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 3px 0 #d9363e, 0 4px 6px rgba(0,0,0,0.15);
-            position: relative;
-            top: 0;
-            transition: all 0.15s ease;
+            z-index: 10000 !important;
+            transform: none !important;
         }
         .logo-preview-close:active {
-            top: 1px;
+            top: -14px !important;
             box-shadow: 0 1px 0 #d9363e, 0 2px 3px rgba(0,0,0,0.1);
         }
     </style>
@@ -549,7 +550,35 @@
             modal.style.display = 'none';
         }
 
-        // LOGO模糊搜索（核心逻辑不变）
+        // ===== 核心修改：支持超1000条文件 - 使用Git Trees API递归获取所有文件 =====
+        async function fetchLogoFiles() {
+            try {
+                // 1. 获取仓库默认分支
+                const repoInfoUrl = `https://api.github.com/repos/${repoOwner}/${repoName}`;
+                const repoRes = await fetch(repoInfoUrl);
+                if (!repoRes.ok) throw new Error(`获取仓库信息失败（${repoRes.status}）`);
+                const repoData = await repoRes.json();
+                const defaultBranch = repoData.default_branch;
+
+                // 2. 获取递归目录树（包含所有文件）
+                const treeUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${defaultBranch}?recursive=1`;
+                const treeRes = await fetch(treeUrl);
+                if (!treeRes.ok) throw new Error(`获取目录树失败（${treeRes.status}）`);
+                const treeData = await treeRes.json();
+
+                // 3. 筛选所有png文件
+                allLogoFiles = treeData.tree
+                    .filter(item => item.type === 'blob' && item.path.endsWith('.png'))
+                    .map(item => ({
+                        name: item.path.split('/').pop(), // 文件名
+                        downloadUrl: cdnBase + item.path.split('/').pop() // 拼接CDN链接
+                    }));
+            } catch (error) {
+                throw new Error(`拉取文件失败：${error.message}`);
+            }
+        }
+
+        // LOGO模糊搜索（逻辑不变，复用修改后的fetchLogoFiles）
         async function fuzzySearchLogo() {
             const key = document.getElementById('searchKey').value.trim().toLowerCase();
             if (!key) {
@@ -563,7 +592,7 @@
             resultBox.style.display = 'none';
             try {
                 if (allLogoFiles.length === 0) {
-                    await fetchLogoFiles();
+                    await fetchLogoFiles(); // 调用修改后的函数
                 }
                 const matchFiles = allLogoFiles.filter(file => 
                     file.name.toLowerCase().includes(key)
@@ -578,7 +607,7 @@
                 let resultHtml = '';
                 matchFiles.forEach(file => {
                     const logoName = file.name.replace('.png', '');
-                    const logoCdnUrl = cdnBase + file.name;
+                    const logoCdnUrl = file.downloadUrl;
                     resultHtml += `
                         <div class="logo-item">
                             <div class="preview" onclick="openLogoPreview('${logoCdnUrl}')">
@@ -599,20 +628,6 @@
                 resultBox.innerHTML = `<p style="text-align:center; color:#f5222d; padding:20px;">搜索失败：${error.message}</p>`;
                 console.error('LOGO搜索失败', error);
             }
-        }
-
-        // 获取LOGO文件列表（不变）
-        async function fetchLogoFiles() {
-            const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/`;
-            const response = await fetch(apiUrl);
-            
-            if (!response.ok) {
-                throw new Error(`GitHub API请求失败（${response.status}）`);
-            }
-            const files = await response.json();
-            allLogoFiles = files
-                .filter(file => file.type === 'file' && file.name.endsWith('.png'))
-                .map(file => ({ name: file.name, downloadUrl: file.download_url }));
         }
 
         // 复制LOGO链接（不变）
@@ -714,18 +729,39 @@
                 });
         }
 
-        // 自定义净化频道名函数（不变）
+        // 正则转义函数：处理特殊字符
+        function escapeRegExp(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // 核心修复：自定义净化关键词功能（全面加固）
         function cleanNameFn(n) {
+            // 1. 开启检查
             if (!document.getElementById('cleanName').checked) return n;
-            
-            let customKeywords = document.getElementById('customCleanKeywords').value.split(',').map(k => k.trim()).filter(k => k);
-            let allKeywords = [...DEFAULT_CLEAN_KEYWORDS, ...customKeywords];
-            
+            console.log('净化前:', n);
+
+            // 2. 获取自定义关键词
+            let customKeywords = document.getElementById('customCleanKeywords').value.trim()
+                .split(',')
+                .map(k => k.trim())
+                .filter(k => k.length > 0); // 过滤空关键词
+
+            // 3. 合并默认关键词并去重
+            let allKeywords = [...new Set([...DEFAULT_CLEAN_KEYWORDS, ...customKeywords])];
+            console.log('净化关键词:', allKeywords);
+
             let cleanedName = n;
+            // 4. 逐个转义并替换（gi：全局、忽略大小写）
             allKeywords.forEach(keyword => {
-                cleanedName = cleanedName.replace(keyword, '');
+                const safeKeyword = escapeRegExp(keyword);
+                const reg = new RegExp(safeKeyword, 'gi');
+                cleanedName = cleanedName.replace(reg, '');
             });
-            return cleanedName.trim();
+
+            // 5. 清理空格并返回
+            cleanedName = cleanedName.replace(/\s+/g, ' ').trim();
+            console.log('净化后:', cleanedName);
+            return cleanedName;
         }
 
         // 判断是否为回看频道（不变）
@@ -815,3 +851,4 @@
     </script>
 </body>
 </html>
+
