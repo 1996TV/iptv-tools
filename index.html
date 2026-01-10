@@ -503,6 +503,8 @@
         const DEFAULT_LOGO_URL = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/";
         const DEFAULT_CLEAN_KEYWORDS = ["高清", "HD", "超清"];
         const CONFIG_STORAGE_KEY = "iptv_tool_config";
+        // ===== 核心修改：定义LOGO匹配失败时的默认LOGO地址 =====
+        const FALLBACK_LOGO = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png";
 
         // 面板切换核心函数（完全保留）
         function switchTab(panelId) {
@@ -769,12 +771,21 @@
             return /(回看|回放|时移|Replay|Catchup|重播)/i.test(n);
         }
 
-        // TXT→M3U（自动替换链接，逻辑不变）
-        function txtToM3u() {
+        // ===== 核心修改：TXT→M3U 增加LOGO匹配失败时的兜底逻辑 =====
+        async function txtToM3u() {
             const epg = document.getElementById('epgUrl').value.trim();
             const logoBase = document.getElementById('logoUrlInput').value.replace(/\/$/, '') + '/';
             const input = document.getElementById('inputContent').value.trim();
             if (!input) return alert('请输入TXT内容！');
+            
+            // 先拉取LOGO列表
+            if (allLogoFiles.length === 0) {
+                try {
+                    await fetchLogoFiles();
+                } catch (err) {
+                    console.warn('拉取LOGO列表失败，全部使用默认LOGO:', err);
+                }
+            }
             
             const lines = input.split('\n');
             let output = `#EXTM3U x-tvg-url="${epg}"\n`;
@@ -792,7 +803,12 @@
                 
                 const cleanName = cleanNameFn(name);
                 const playUrl = replaceLink(url);
-                output += `#EXTINF:-1 tvg-name="${cleanName}" tvg-logo="${logoBase}${cleanName}.png" group-title="${group}",${cleanName}\n${playUrl}\n`;
+                // 判断LOGO是否存在
+                const logoExists = allLogoFiles.some(file => file.name.toLowerCase() === `${cleanName}.png`.toLowerCase());
+                // 存在则用基础地址拼接，不存在则用兜底LOGO
+                const finalLogoUrl = logoExists ? `${logoBase}${cleanName}.png` : FALLBACK_LOGO;
+                
+                output += `#EXTINF:-1 tvg-name="${cleanName}" tvg-logo="${finalLogoUrl}" group-title="${group}",${cleanName}\n${playUrl}\n`;
             });
             document.getElementById('output').value = output;
         }
@@ -851,4 +867,3 @@
     </script>
 </body>
 </html>
-
