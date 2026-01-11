@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>IPTV工具集 - 分面板版</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", Arial, sans-serif;
         }
         body {
             background: #f5f5f5;
             padding: 15px;
             max-width: 100%;
             margin: 0 auto;
-            line-height: 1.5;
         }
+        /* 面板切换按钮 */
         .tab-group {
             display: flex;
             gap: 10px;
@@ -29,21 +27,28 @@
         }
         .tab-btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 0;
             border: none;
             border-radius: 8px;
             background: #e5e5e5;
+            color: #333;
             font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.3s;
         }
         .tab-btn.active {
             background: #1677ff;
             color: #fff;
         }
+        /* 面板容器 */
+        .panel-container {
+            width: 100%;
+        }
         .panel {
             display: none;
             background: #fff;
-            padding: 20px;
+            padding: 20px 15px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,.08);
         }
@@ -51,105 +56,822 @@
             display: block;
         }
         h1 {
+            font-size: 18px;
             text-align: center;
             margin-bottom: 20px;
-            font-size: 18px;
+            color: #333;
+            font-weight: 600;
         }
+        /* LOGO模糊搜索模块 */
+        .logo-search {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .logo-search h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 500;
+        }
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .search-bar button {
+            padding: 0 20px;
+            background: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            /* 3D效果 */
+            box-shadow: 0 4px 0 #0f5ccc, 0 6px 8px rgba(0,0,0,0.15);
+            position: relative;
+            top: 0;
+            transition: all 0.15s ease;
+        }
+        .search-bar button:active {
+            top: 2px;
+            box-shadow: 0 2px 0 #0f5ccc, 0 3px 4px rgba(0,0,0,0.1);
+        }
+        .loading {
+            text-align: center;
+            color: #1677ff;
+            font-size: 14px;
+            padding: 20px;
+            display: none;
+        }
+        .logo-result {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+            display: none;
+        }
+        .logo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+        }
+        .logo-item:last-child {
+            border-bottom: none;
+        }
+        .logo-item:hover {
+            background: #e8f4ff;
+        }
+        .logo-item .preview {
+            width: 60px;
+            height: 30px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+        .logo-item .preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.2s;
+        }
+        .logo-item .preview img:hover {
+            transform: scale(1.05);
+        }
+        .logo-item .preview .placeholder {
+            color: #999;
+            font-size: 10px;
+        }
+        .logo-item .info {
+            flex: 1;
+        }
+        .logo-item .name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .logo-item .url {
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+        .logo-item .copy-btn {
+            padding: 4px 12px;
+            font-size: 12px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            background: #1677ff;
+            /* 3D效果 */
+            box-shadow: 0 3px 0 #0f5ccc, 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            top: 0;
+            transition: all 0.15s ease;
+        }
+        .logo-item .copy-btn:active {
+            top: 1px;
+            box-shadow: 0 1px 0 #0f5ccc, 0 2px 3px rgba(0,0,0,0.1);
+        }
+        /* 输入项样式 - 移动端适配 */
         .input-item {
             margin-bottom: 15px;
+            width: 100%;
         }
         .input-item label {
+            font-size: 14px;
+            color: #555;
             display: block;
             margin-bottom: 6px;
-            color: #555;
+            font-weight: 500;
         }
         input, textarea {
             width: 100%;
-            padding: 12px;
+            padding: 12px 16px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background: #fafafa;
+            font-size: 14px;
         }
         textarea {
-            min-height: 160px;
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.5;
         }
         .checkbox-item {
             display: flex;
             align-items: center;
             margin: 10px 0;
+            font-size: 14px;
+            color: #555;
         }
         .checkbox-item input {
             margin-right: 8px;
+            width: 18px;
+            height: 18px;
         }
-        .btn-group, .func-btn {
+        .btn-group {
             display: flex;
             gap: 8px;
             margin: 15px 0;
             flex-wrap: wrap;
+            width: 100%;
         }
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            /* 统一3D效果基础样式 */
+            position: relative;
+            top: 0;
+            transition: all 0.15s ease;
+        }
+        /* 蓝色按钮（选取文件、普通功能按钮） */
         button.blue {
             background: #1677ff;
-            color: #fff;
+            box-shadow: 0 4px 0 #0f5ccc, 0 6px 8px rgba(0,0,0,0.15);
         }
+        button.blue:active {
+            top: 2px;
+            box-shadow: 0 2px 0 #0f5ccc, 0 3px 4px rgba(0,0,0,0.1);
+        }
+        /* 红色按钮（清除内容） */
+        button.red {
+            background: #ff4d4f;
+            color: #fff; /* 清除内容文字红色背景+白色文字 */
+            box-shadow: 0 4px 0 #d9363e, 0 6px 8px rgba(0,0,0,0.15);
+        }
+        button.red:active {
+            top: 2px;
+            box-shadow: 0 2px 0 #d9363e, 0 3px 4px rgba(0,0,0,0.1);
+        }
+        /* 绿色按钮（下载、复制） */
         button.green {
             background: #52c41a;
             color: #fff;
+            box-shadow: 0 4px 0 #389e0d, 0 6px 8px rgba(0,0,0,0.15);
         }
-        button.red {
+        button.green:active {
+            top: 2px;
+            box-shadow: 0 2px 0 #389e0d, 0 3px 4px rgba(0,0,0,0.1);
+        }
+        button.gray {
+            background: #666;
+        }
+        .func-btn {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        /* 选取文件：蓝色按钮+文件名显示 */
+        .upload {
+            margin: 15px 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .upload-input-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 40px;
+            border-radius: 8px;
+            background: #1677ff;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #0f5ccc, 0 6px 8px rgba(0,0,0,0.15);
+            position: relative;
+            top: 0;
+            transition: all 0.15s ease;
+        }
+        .upload-input-label:active {
+            top: 2px;
+            box-shadow: 0 2px 0 #0f5ccc, 0 3px 4px rgba(0,0,0,0.1);
+        }
+        .upload input {
+            display: none;
+            border: none;
+            padding: 0;
+            background: transparent;
+        }
+        /* 文件名显示框 */
+        .file-name-display {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .file-name-display:empty::before {
+            content: "未选择文件";
+            color: #999;
+        }
+        /* 安卓下载提示 */
+        .download-tip {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+        /* 自定义净化关键词样式 */
+        .custom-clean-tip {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        /* LOGO放大预览弹窗 - 强制关闭按钮在右上角 */
+        .logo-preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        .logo-preview-content {
+            max-width: 90%;
+            max-height: 80%;
+            position: relative;
+            display: inline-block;
+        }
+        .logo-preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+        .logo-preview-close {
+            position: absolute !important;
+            top: -15px !important;
+            right: -15px !important;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             background: #ff4d4f;
             color: #fff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 0 #d9363e, 0 4px 6px rgba(0,0,0,0.15);
+            z-index: 10000 !important;
+            transform: none !important;
+        }
+        .logo-preview-close:active {
+            top: -14px !important;
+            box-shadow: 0 1px 0 #d9363e, 0 2px 3px rgba(0,0,0,0.1);
         }
     </style>
 </head>
-
 <body>
+    <!-- 面板切换按钮（顺序及默认激活状态不变） -->
+    <div class="tab-group">
+        <button class="tab-btn active" onclick="switchTab('iptv-panel')">IPTV文件转换</button>
+        <button class="tab-btn" onclick="switchTab('logo-panel')">LOGO模糊搜索</button>
+    </div>
+    <!-- 面板容器 -->
+    <div class="panel-container">
+        <!-- LOGO搜索面板 -->
+        <div class="panel" id="logo-panel">
+            <h1>IPTV工具集 - LOGO模糊搜索</h1>
+            <div class="logo-search">
+                <h3>频道LOGO模糊搜索</h3>
+                <div class="search-bar">
+                    <input type="text" id="searchKey" placeholder="输入关键词（如CCTV、4K、BBC）">
+                    <button class="blue" onclick="fuzzySearchLogo()">模糊搜索</button>
+                </div>
+                <div class="loading" id="loading">正在拉取LOGO列表...</div>
+                <div id="logoResult" class="logo-result"></div>
+            </div>
+        </div>
+        <!-- IPTV转换面板（默认显示） -->
+        <div class="panel active" id="iptv-panel">
+            <h1>IPTV工具集 - 文件转换</h1>
+            <!-- EPG地址（默认值不变） -->
+            <div class="input-item">
+                <label>EPG 地址</label>
+                <input id="epgUrl" placeholder="请输入EPG地址" value="https://epg.catvod.com/epg.xml">
+            </div>
+            <!-- Logo基础地址 -->
+            <div class="input-item">
+                <label>Logo 基础地址（结尾 /）</label>
+                <input id="logoUrlInput" placeholder="请输入Logo基础地址" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/">
+            </div>
+            <!-- 新增：默认LOGO自定义输入框 -->
+            <div class="input-item">
+                <label>默认LOGO地址（匹配失败时使用）</label>
+                <input id="fallbackLogoInput" placeholder="请输入默认LOGO图片链接" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png">
+            </div>
+            <!-- 自定义净化关键词输入框 -->
+            <div class="input-item">
+                <label>自定义净化关键词</label>
+                <input id="customCleanKeywords" placeholder="多个关键词用英文逗号分隔，如:测试,备用,无效">
+                <div class="custom-clean-tip">提示：输入后会和默认关键词（高清|HD|超清）一起过滤频道名</div>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="cleanName" checked>
+                <label>净化频道名</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="removeReplay" checked>
+                <label>去除回看 / 回放 / 时移频道</label>
+            </div>
+            <div class="input-item">
+                <label>旧链接前缀</label>
+                <input id="oldLinkPrefix" placeholder="如http://old.com/">
+            </div>
+            <div class="input-item">
+                <label>新链接前缀</label>
+                <input id="newLinkPrefix" placeholder="如http://new.com/">
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="enableLinkReplace" checked>
+                <label>启用链接替换（转换文件时自动生效）</label>
+            </div>
+            <!-- 选取文件：蓝色按钮+文件名显示 -->
+            <div class="upload">
+                <label for="fileInput" class="upload-input-label">选取文件</label>
+                <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8" onchange="readFile(this)">
+                <div class="file-name-display" id="fileNameDisplay"></div> <!-- 文件名显示框 -->
+            </div>
+            <textarea id="inputContent" placeholder="粘贴或上传 TXT / M3U 内容"></textarea>
+            
+            <div class="btn-group">
+                <button class="blue" onclick="txtToM3u()">TXT → M3U</button>
+                <button class="blue" onclick="m3uToTxt()">M3U → TXT</button>
+                <button class="blue" onclick="onlyReplaceLink()">只替换链接（单独使用）</button>
+                <button class="red" onclick="clearAll()">清空内容</button> <!-- 清除内容红色按钮 -->
+            </div>
+            <div class="func-btn">
+                <button class="green" onclick="downloadResult()">下载结果</button> <!-- 绿色按钮 -->
+                <button class="green" onclick="copyResult()">复制结果</button> <!-- 绿色按钮 -->
+            </div>
+            <div class="download-tip">安卓手机请开启浏览器存储权限，下载后在通知栏查看</div>
+            <textarea id="output" placeholder="处理结果" readonly></textarea>
+        </div>
+    </div>
+    <!-- LOGO放大预览弹窗 -->
+    <div class="logo-preview-modal" id="logoPreviewModal" onclick="closeLogoPreview()">
+        <div class="logo-preview-content" onclick="event.stopPropagation()">
+            <img src="" alt="LOGO预览" class="logo-preview-img" id="previewImg">
+            <button class="logo-preview-close" onclick="closeLogoPreview()">×</button>
+        </div>
+    </div>
+    <script>
+        // 仓库配置（保留原有）
+        const repoOwner = "1996TV";
+        const repoName = "LOGO";
+        const cdnBase = `https://cdn.jsdelivr.net/gh/${repoOwner}/${repoName}@main/`;
+        let allLogoFiles = [];
+        // 常量配置（默认值不变）
+        const DEFAULT_EPG_URL = "https://epg.catvod.com/epg.xml";
+        const DEFAULT_LOGO_URL = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/";
+        const DEFAULT_CLEAN_KEYWORDS = ["高清", "HD", "超清"];
+        const CONFIG_STORAGE_KEY = "iptv_tool_config";
+        // 移除固定默认LOGO常量，改为读取输入框值
 
-<script>
-(function(){
-  const p=new URLSearchParams(location.search);
-  const sub=p.get('sub');
-  if(!sub) return;
-  try{
-    const m3u=decodeURIComponent(escape(atob(sub)));
-    document.head.innerHTML='<meta charset="UTF-8"><title>IPTV Subscription</title>';
-    document.body.innerText=m3u;
-    document.body.style.whiteSpace='pre';
-  }catch(e){
-    document.body.innerText='#EXTM3U\n# 订阅解析失败';
-  }
-})();
-</script>
+        // 面板切换核心函数（完全保留）
+        function switchTab(panelId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(panelId).classList.add('active');
+        }
 
-<div class="tab-group">
-    <button class="tab-btn active" onclick="switchTab('iptv-panel')">IPTV文件转换</button>
-    <button class="tab-btn" onclick="switchTab('logo-panel')">LOGO模糊搜索</button>
-</div>
+        // 页面加载初始化（保留不读取缓存逻辑，新增默认LOGO输入框初始化）
+        window.onload = function() {
+            localStorage.removeItem(CONFIG_STORAGE_KEY);
+            history.replaceState(null, null, window.location.href);
+            document.getElementById('epgUrl').value = DEFAULT_EPG_URL;
+            document.getElementById('logoUrlInput').value = DEFAULT_LOGO_URL;
+            // 初始化默认LOGO输入框
+            document.getElementById('fallbackLogoInput').value = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png";
+            document.getElementById('searchKey').value = '';
+            document.getElementById('customCleanKeywords').value = '';
+            document.getElementById('oldLinkPrefix').value = '';
+            document.getElementById('newLinkPrefix').value = '';
+            document.getElementById('inputContent').value = '';
+            document.getElementById('output').value = '';
+            document.getElementById('fileNameDisplay').textContent = ''; // 初始化文件名显示框
+            document.getElementById('cleanName').checked = true;
+            document.getElementById('removeReplay').checked = true;
+            document.getElementById('enableLinkReplace').checked = true;
+        }
 
-<!-- ===== 中间内容与你原文件完全一致（已完整保留） ===== -->
-<!-- 省略说明：此处到按钮区的代码与 index.html 8.txt 完全一致 -->
+        // 禁用配置存储功能（保留）
+        function saveConfig() { return; }
+        function loadConfig() { return; }
 
-<div class="func-btn">
-    <button class="green" onclick="downloadResult()">下载结果</button>
-    <button class="green" onclick="copyResult()">复制结果</button>
-    <button class="green" onclick="generateSubLink()">生成订阅链接</button>
-</div>
+        // LOGO放大预览功能（完全保留）
+        function openLogoPreview(imgUrl) {
+            const modal = document.getElementById('logoPreviewModal');
+            const previewImg = document.getElementById('previewImg');
+            previewImg.src = imgUrl;
+            modal.style.display = 'flex';
+        }
+        function closeLogoPreview() {
+            const modal = document.getElementById('logoPreviewModal');
+            modal.style.display = 'none';
+        }
 
-<script>
-/* 你原有的所有 JS 代码全部保留在这里（未改动） */
+        // ===== 核心修改：支持超1000条文件 - 使用Git Trees API递归获取所有文件 =====
+        async function fetchLogoFiles() {
+            try {
+                // 1. 获取仓库默认分支
+                const repoInfoUrl = `https://api.github.com/repos/${repoOwner}/${repoName}`;
+                const repoRes = await fetch(repoInfoUrl);
+                if (!repoRes.ok) throw new Error(`获取仓库信息失败（${repoRes.status}）`);
+                const repoData = await repoRes.json();
+                const defaultBranch = repoData.default_branch;
 
-function generateSubLink(){
-    const outEl=document.getElementById('output');
-    if(!outEl||!outEl.value.trim()){
-        alert('请先生成 M3U 内容');
-        return;
-    }
-    const b=btoa(unescape(encodeURIComponent(outEl.value)));
-    const url=location.origin+location.pathname+'?sub='+b;
-    navigator.clipboard.writeText(url).then(()=>{
-        alert('订阅链接已生成并复制，可直接粘贴到播放器使用');
-    });
-}
-</script>
+                // 2. 获取递归目录树（包含所有文件）
+                const treeUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${defaultBranch}?recursive=1`;
+                const treeRes = await fetch(treeUrl);
+                if (!treeRes.ok) throw new Error(`获取目录树失败（${treeRes.status}）`);
+                const treeData = await treeRes.json();
 
+                // 3. 筛选所有png文件
+                allLogoFiles = treeData.tree
+                    .filter(item => item.type === 'blob' && item.path.endsWith('.png'))
+                    .map(item => ({
+                        name: item.path.split('/').pop(), // 文件名
+                        downloadUrl: cdnBase + item.path.split('/').pop() // 拼接CDN链接
+                    }));
+            } catch (error) {
+                throw new Error(`拉取文件失败：${error.message}`);
+            }
+        }
+
+        // LOGO模糊搜索（逻辑不变，复用修改后的fetchLogoFiles）
+        async function fuzzySearchLogo() {
+            const key = document.getElementById('searchKey').value.trim().toLowerCase();
+            if (!key) {
+                alert('请输入关键词！');
+                return;
+            }
+            const loading = document.getElementById('loading');
+            const resultBox = document.getElementById('logoResult');
+            
+            loading.style.display = 'block';
+            resultBox.style.display = 'none';
+            try {
+                if (allLogoFiles.length === 0) {
+                    await fetchLogoFiles(); // 调用修改后的函数
+                }
+                const matchFiles = allLogoFiles.filter(file => 
+                    file.name.toLowerCase().includes(key)
+                );
+                loading.style.display = 'none';
+                resultBox.style.display = 'block';
+                
+                if (matchFiles.length === 0) {
+                    resultBox.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">未找到匹配的LOGO文件</p>';
+                    return;
+                }
+                let resultHtml = '';
+                matchFiles.forEach(file => {
+                    const logoName = file.name.replace('.png', '');
+                    const logoCdnUrl = file.downloadUrl;
+                    resultHtml += `
+                        <div class="logo-item">
+                            <div class="preview" onclick="openLogoPreview('${logoCdnUrl}')">
+                                <img src="${logoCdnUrl}" alt="${logoName}" onerror="this.parentNode.innerHTML='<span class=placeholder>加载失败</span>'">
+                            </div>
+                            <div class="info">
+                                <div class="name">${logoName}</div>
+                                <div class="url">${logoCdnUrl}</div>
+                            </div>
+                            <button class="copy-btn" onclick="copyLogoUrl('${logoCdnUrl}')">复制</button>
+                        </div>
+                    `;
+                });
+                resultBox.innerHTML = resultHtml;
+            } catch (error) {
+                loading.style.display = 'none';
+                resultBox.style.display = 'block';
+                resultBox.innerHTML = `<p style="text-align:center; color:#f5222d; padding:20px;">搜索失败：${error.message}</p>`;
+                console.error('LOGO搜索失败', error);
+            }
+        }
+
+        // 复制LOGO链接（不变）
+        function copyLogoUrl(url) {
+            navigator.clipboard.writeText(url)
+                .then(() => alert('LOGO链接复制成功！'))
+                .catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = url;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('LOGO链接复制成功！');
+                });
+        }
+
+        // 读取上传文件（新增文件名显示）
+        function readFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            // 显示文件名到文件名显示框
+            document.getElementById('fileNameDisplay').textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('inputContent').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        // 统一链接替换函数（不变）
+        function replaceLink(url) {
+            if (!document.getElementById('enableLinkReplace').checked) return url;
+            const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
+            const newPrefix = document.getElementById('newLinkPrefix').value.trim();
+            if (!oldPrefix || !newPrefix) return url;
+            return url.replace(new RegExp(oldPrefix, 'g'), newPrefix);
+        }
+
+        // 安卓下载优化（完全保留）
+        function downloadResult() {
+            const content = document.getElementById('output').value.trim();
+            if (!content) return alert('暂无内容可下载！');
+            const ext = content.startsWith('#EXTM3U') ? 'm3u' : 'txt';
+            const fileName = `iptv.${ext}`;
+            try {
+                const blob = new Blob([content], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                a.target = '_self';
+                document.body.appendChild(a);
+                const event = new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                a.dispatchEvent(event);
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    alert(`✅ 下载已触发\n文件：${fileName}\n请在通知栏或Download文件夹查看`);
+                }, 1000);
+            } catch (e1) {
+                console.error('Blob方案失败，尝试降级方案', e1);
+                try {
+                    const dataUri = `data:application/octet-stream;charset=utf-8,${encodeURIComponent(content)}`;
+                    const a = document.createElement('a');
+                    a.href = dataUri;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        alert(`✅ 降级方案下载成功\n文件：${fileName}\n请在通知栏查看`);
+                    }, 500);
+                } catch (e2) {
+                    console.error('降级方案也失败', e2);
+                    alert(`⚠️ 自动下载失败\n请点击【复制结果】按钮，手动粘贴到记事本并保存为 ${fileName}`);
+                }
+            }
+        }
+
+        // 复制结果（不变）
+        function copyResult() {
+            const content = document.getElementById('output').value.trim();
+            if (!content) return alert('暂无内容可复制！');
+            navigator.clipboard.writeText(content)
+                .then(() => alert('结果复制成功！可粘贴到记事本保存'))
+                .catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = content;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    alert('结果复制成功！');
+                });
+        }
+
+        // 正则转义函数：处理特殊字符
+        function escapeRegExp(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // 核心修复：自定义净化关键词功能（全面加固）
+        function cleanNameFn(n) {
+            // 1. 开启检查
+            if (!document.getElementById('cleanName').checked) return n;
+            console.log('净化前:', n);
+
+            // 2. 获取自定义关键词
+            let customKeywords = document.getElementById('customCleanKeywords').value.trim()
+                .split(',')
+                .map(k => k.trim())
+                .filter(k => k.length > 0); // 过滤空关键词
+
+            // 3. 合并默认关键词并去重
+            let allKeywords = [...new Set([...DEFAULT_CLEAN_KEYWORDS, ...customKeywords])];
+            console.log('净化关键词:', allKeywords);
+
+            let cleanedName = n;
+            // 4. 逐个转义并替换（gi：全局、忽略大小写）
+            allKeywords.forEach(keyword => {
+                const safeKeyword = escapeRegExp(keyword);
+                const reg = new RegExp(safeKeyword, 'gi');
+                cleanedName = cleanedName.replace(reg, '');
+            });
+
+            // 5. 清理空格并返回
+            cleanedName = cleanedName.replace(/\s+/g, ' ').trim();
+            console.log('净化后:', cleanedName);
+            return cleanedName;
+        }
+
+        // 判断是否为回看频道（不变）
+        function isReplay(n) {
+            return /(回看|回放|时移|Replay|Catchup|重播)/i.test(n);
+        }
+
+        // ===== 核心修改：TXT→M3U 读取自定义默认LOGO输入框作为兜底 =====
+        async function txtToM3u() {
+            const epg = document.getElementById('epgUrl').value.trim();
+            const logoBase = document.getElementById('logoUrlInput').value.replace(/\/$/, '') + '/';
+            // 读取自定义默认LOGO地址
+            const fallbackLogo = document.getElementById('fallbackLogoInput').value.trim();
+            const input = document.getElementById('inputContent').value.trim();
+            if (!input) return alert('请输入TXT内容！');
+            
+            // 先拉取LOGO列表
+            if (allLogoFiles.length === 0) {
+                try {
+                    await fetchLogoFiles();
+                } catch (err) {
+                    console.warn('拉取LOGO列表失败，全部使用默认LOGO:', err);
+                }
+            }
+            
+            const lines = input.split('\n');
+            let output = `#EXTM3U x-tvg-url="${epg}"\n`;
+            let group = '';
+            lines.forEach(l => {
+                l = l.trim();
+                if (!l) return;
+                if (l.endsWith(',#genre#')) {
+                    group = l.replace(',#genre#', '');
+                    return;
+                }
+                if (!l.includes(',')) return;
+                const [name, url] = l.split(',');
+                if (document.getElementById('removeReplay').checked && isReplay(name)) return;
+                
+                const cleanName = cleanNameFn(name);
+                const playUrl = replaceLink(url);
+                // 判断LOGO是否存在
+                const logoExists = allLogoFiles.some(file => file.name.toLowerCase() === `${cleanName}.png`.toLowerCase());
+                // 存在则用基础地址拼接，不存在则用自定义默认LOGO
+                const finalLogoUrl = logoExists ? `${logoBase}${cleanName}.png` : fallbackLogo;
+                
+                output += `#EXTINF:-1 tvg-name="${cleanName}" tvg-logo="${finalLogoUrl}" group-title="${group}",${cleanName}\n${playUrl}\n`;
+            });
+            document.getElementById('output').value = output;
+        }
+
+        // M3U→TXT（自动替换链接，逻辑不变）
+        function m3uToTxt() {
+            const input = document.getElementById('inputContent').value.trim();
+            if (!input) return alert('请输入M3U内容！');
+            
+            const lines = input.split('\n');
+            let output = '';
+            let currentGroup = '';
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('#EXTINF')) {
+                    const nameMatch = line.match(/,(.*)$/);
+                    const groupMatch = line.match(/group-title="([^"]+)"/);
+                    const name = nameMatch ? nameMatch[1].trim() : '';
+                    const group = groupMatch ? groupMatch[1] : '默认分类';
+                    if (document.getElementById('removeReplay').checked && isReplay(name)) {
+                        i++;
+                        continue;
+                    }
+                    if (group !== currentGroup) {
+                        output += `${group},#genre#\n`;
+                        currentGroup = group;
+                    }
+                    let url = lines[i + 1] ? lines[i + 1].trim() : '';
+                    url = replaceLink(url);
+                    const cleanName = cleanNameFn(name);
+                    output += `${cleanName},${url}\n`;
+                    i++;
+                }
+            }
+            document.getElementById('output').value = output;
+        }
+
+        // 单独替换链接（保留原有功能）
+        function onlyReplaceLink() {
+            const input = document.getElementById('inputContent').value.trim();
+            if (!input) return alert('请输入内容！');
+            const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
+            const newPrefix = document.getElementById('newLinkPrefix').value.trim();
+            if (!oldPrefix || !newPrefix) return alert('请填写完整的新旧链接前缀！');
+            
+            let output = input.replace(new RegExp(oldPrefix, 'g'), newPrefix);
+            document.getElementById('output').value = output;
+        }
+
+        // 清空内容（新增清空文件名显示）
+        function clearAll() {
+            document.getElementById('inputContent').value = '';
+            document.getElementById('output').value = '';
+            document.getElementById('fileNameDisplay').textContent = ''; // 清空文件名显示框
+        }
+    </script>
 </body>
 </html>
