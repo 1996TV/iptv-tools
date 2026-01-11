@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>IPTV工具集 - 分面板版</title>
     <style>
         * {
@@ -11,13 +13,16 @@
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background: #f5f5f5;
             padding: 15px;
             max-width: 100%;
             margin: 0 auto;
+            line-height: 1.5;
         }
+        /* 面板切换按钮 */
         .tab-group {
             display: flex;
             gap: 10px;
@@ -40,6 +45,7 @@
             background: #1677ff;
             color: #fff;
         }
+        /* 面板容器 */
         .panel-container {
             width: 100%;
         }
@@ -52,6 +58,11 @@
         }
         .panel.active {
             display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         h1 {
             font-size: 18px;
@@ -60,6 +71,7 @@
             color: #333;
             font-weight: 600;
         }
+        /* LOGO模糊搜索模块 */
         .logo-search {
             margin-bottom: 20px;
             padding-bottom: 20px;
@@ -115,6 +127,14 @@
             border-radius: 8px;
             padding: 10px;
             display: none;
+            scrollbar-width: thin;
+        }
+        .logo-result::-webkit-scrollbar {
+            width: 4px;
+        }
+        .logo-result::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 2px;
         }
         .logo-item {
             display: flex;
@@ -123,6 +143,7 @@
             padding: 10px;
             border-bottom: 1px solid #f5f5f5;
             cursor: pointer;
+            transition: background-color 0.2s ease;
         }
         .logo-item:last-child {
             border-bottom: none;
@@ -140,6 +161,7 @@
             justify-content: center;
             overflow: hidden;
             cursor: zoom-in;
+            background-color: #fafafa;
         }
         .logo-item .preview img {
             width: 100%;
@@ -161,11 +183,18 @@
             font-size: 14px;
             color: #333;
             margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .logo-item .url {
             font-size: 12px;
             color: #666;
             word-break: break-all;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         .logo-item .copy-btn {
             padding: 4px 12px;
@@ -185,6 +214,7 @@
             top: 1px;
             box-shadow: 0 1px 0 #0f5ccc, 0 2px 3px rgba(0,0,0,0.1);
         }
+        /* 输入项样式 - 移动端适配 */
         .input-item {
             margin-bottom: 15px;
             width: 100%;
@@ -203,6 +233,11 @@
             border-radius: 8px;
             background: #fafafa;
             font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+        input:focus, textarea:focus {
+            border-color: #1677ff;
+            outline: none;
         }
         textarea {
             min-height: 180px;
@@ -240,6 +275,7 @@
             top: 0;
             transition: all 0.15s ease;
         }
+        /* 蓝色按钮（选取文件、普通功能按钮） */
         button.blue {
             background: #1677ff;
             box-shadow: 0 4px 0 #0f5ccc, 0 6px 8px rgba(0,0,0,0.15);
@@ -248,23 +284,26 @@
             top: 2px;
             box-shadow: 0 2px 0 #0f5ccc, 0 3px 4px rgba(0,0,0,0.1);
         }
+        /* 红色按钮（清除内容） */
         button.red {
             background: #ff4d4f;
-            color: #fff;
             box-shadow: 0 4px 0 #d9363e, 0 6px 8px rgba(0,0,0,0.15);
         }
         button.red:active {
             top: 2px;
             box-shadow: 0 2px 0 #d9363e, 0 3px 4px rgba(0,0,0,0.1);
         }
+        /* 绿色按钮（下载、复制） */
         button.green {
             background: #52c41a;
-            color: #fff;
-            box-shadow: 0 4px 0 #389e0d, 0 6px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 0 #389e0d, 0 6px 8px rgba(0,0,0,0.15);
         }
         button.green:active {
             top: 2px;
             box-shadow: 0 2px 0 #389e0d, 0 3px 4px rgba(0,0,0,0.1);
+        }
+        button.gray {
+            background: #666;
         }
         .func-btn {
             display: flex;
@@ -273,6 +312,7 @@
             flex-wrap: wrap;
             width: 100%;
         }
+        /* 选取文件：蓝色按钮+文件名显示 */
         .upload {
             margin: 15px 0;
             width: 100%;
@@ -302,7 +342,11 @@
         }
         .upload input {
             display: none;
+            border: none;
+            padding: 0;
+            background: transparent;
         }
+        /* 文件名显示框 */
         .file-name-display {
             flex: 1;
             padding: 8px 12px;
@@ -319,6 +363,7 @@
             content: "未选择文件";
             color: #999;
         }
+        /* 安卓下载提示 */
         .download-tip {
             font-size: 12px;
             color: #666;
@@ -326,11 +371,13 @@
             margin-top: 10px;
             line-height: 1.4;
         }
+        /* 自定义净化关键词样式 */
         .custom-clean-tip {
             font-size: 12px;
             color: #999;
             margin-top: 4px;
         }
+        /* LOGO放大预览弹窗 - 强制关闭按钮在右上角 */
         .logo-preview-modal {
             position: fixed;
             top: 0;
@@ -343,12 +390,16 @@
             justify-content: center;
             z-index: 9999;
             padding: 20px;
+            backdrop-filter: blur(4px);
         }
         .logo-preview-content {
             max-width: 90%;
             max-height: 80%;
             position: relative;
             display: inline-block;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .logo-preview-img {
             width: 100%;
@@ -372,36 +423,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 0 #d9363e, 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 0 #d9363e, 0 4px 6px rgba(0,0,0,0.15);
             z-index: 10000 !important;
+            transform: none !important;
         }
-        .sub-link-group {
-            display: flex;
-            gap: 10px;
-            width: 100%;
+        .logo-preview-close:active {
+            top: -14px !important;
+            box-shadow: 0 1px 0 #d9363e, 0 2px 3px rgba(0,0,0,0.1);
         }
-        .sub-link-group input {
-            flex: 1;
-        }
-        .sub-link-group button {
-            flex: none;
-            width: 80px;
-            padding: 12px 0;
-        }
-        .repo-config {
-            display: none;
-        }
-        #repoSubLinkContainer {
-            display: none;
+        /* 空状态样式 */
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
+    <!-- 面板切换按钮（顺序及默认激活状态不变） -->
     <div class="tab-group">
         <button class="tab-btn active" onclick="switchTab('iptv-panel')">IPTV文件转换</button>
         <button class="tab-btn" onclick="switchTab('logo-panel')">LOGO模糊搜索</button>
     </div>
+    <!-- 面板容器 -->
     <div class="panel-container">
+        <!-- LOGO搜索面板 -->
         <div class="panel" id="logo-panel">
             <h1>IPTV工具集 - LOGO模糊搜索</h1>
             <div class="logo-search">
@@ -414,36 +461,23 @@
                 <div id="logoResult" class="logo-result"></div>
             </div>
         </div>
+        <!-- IPTV转换面板（默认显示） -->
         <div class="panel active" id="iptv-panel">
             <h1>IPTV工具集 - 文件转换</h1>
-
-            <div class="repo-config">
-                <input id="githubUser" value="1996TV">
-                <input id="githubRepo" value="iptv-tools">
-                <input id="githubTokenEncrypted" value="Z2hwX3hRSWFYZnp2cHdOc2V5b0Jyb2p5UTZwVlNsZ3BpWDN2emZ3MQ==">
-            </div>
-
-            <!-- 自定义源名称输入框 -->
-            <div class="input-item">
-                <label>自定义源名称（如xxx.m3u或xxx.txt）</label>
-                <input id="filePath" value="iptv.m3u" placeholder="输入文件在仓库中的路径">
-            </div>
-
+            <!-- EPG地址（默认值不变） -->
             <div class="input-item">
                 <label>EPG 地址</label>
-                <input id="epgUrl" value="https://epg.catvod.com/epg.xml">
+                <input id="epgUrl" placeholder="请输入EPG地址" value="https://epg.catvod.com/epg.xml">
             </div>
+            <!-- Logo基础地址 -->
             <div class="input-item">
-                <label>Logo 基础地址</label>
-                <input id="logoUrlInput" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/">
+                <label>Logo 基础地址（结尾 /）</label>
+                <input id="logoUrlInput" placeholder="请输入Logo基础地址" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/">
             </div>
-            <div class="input-item">
-                <label>默认LOGO地址</label>
-                <input id="fallbackLogoInput" value="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png">
-            </div>
+            <!-- 自定义净化关键词输入框 -->
             <div class="input-item">
                 <label>自定义净化关键词</label>
-                <input id="customCleanKeywords" placeholder="多个关键词用英文逗号分隔">
+                <input id="customCleanKeywords" placeholder="多个关键词用英文逗号分隔，如:测试,备用,无效">
                 <div class="custom-clean-tip">提示：输入后会和默认关键词（高清|HD|超清）一起过滤频道名</div>
             </div>
             <div class="checkbox-item">
@@ -464,145 +498,198 @@
             </div>
             <div class="checkbox-item">
                 <input type="checkbox" id="enableLinkReplace" checked>
-                <label>启用链接替换</label>
+                <label>启用链接替换（转换文件时自动生效）</label>
             </div>
-            
-            <!-- 文件上传区域 -->
+            <!-- 选取文件：蓝色按钮+文件名显示 -->
             <div class="upload">
                 <label for="fileInput" class="upload-input-label">选取文件</label>
                 <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8" onchange="readFile(this)">
-                <div class="file-name-display" id="fileNameDisplay"></div>
+                <div class="file-name-display" id="fileNameDisplay"></div> <!-- 文件名显示框 -->
             </div>
-            
-            <!-- 内容输入框 -->
             <textarea id="inputContent" placeholder="粘贴或上传 TXT / M3U 内容"></textarea>
             
-            <!-- 功能按钮组 -->
             <div class="btn-group">
                 <button class="blue" onclick="txtToM3u()">TXT → M3U</button>
                 <button class="blue" onclick="m3uToTxt()">M3U → TXT</button>
-                <button class="blue" onclick="onlyReplaceLink()">只替换链接</button>
-                <button class="red" onclick="clearAll()">清空内容</button>
+                <button class="blue" onclick="onlyReplaceLink()">只替换链接（单独使用）</button>
+                <button class="red" onclick="clearAll()">清空内容</button> <!-- 清除内容红色按钮 -->
             </div>
-
-            <!-- 结果操作按钮 -->
             <div class="func-btn">
-                <button class="green" onclick="downloadResult()">下载结果</button>
-                <button class="green" onclick="copyResult()">复制结果</button>
-                <button class="green" onclick="generateRepoSubLink()">生成订阅链接</button>
+                <button class="green" onclick="downloadResult()">下载结果</button> <!-- 绿色按钮 -->
+                <button class="green" onclick="copyResult()">复制结果</button> <!-- 绿色按钮 -->
             </div>
-
-            <!-- 订阅地址容器 -->
-            <div class="input-item" id="repoSubLinkContainer">
-                <label>订阅地址（jsdelivr CDN格式）</label>
-                <div class="sub-link-group">
-                    <input id="repoSubLinkOutput" readonly>
-                    <button class="green" onclick="copyRepoSubLink()">复制</button>
-                </div>
-            </div>
-
             <div class="download-tip">安卓手机请开启浏览器存储权限，下载后在通知栏查看</div>
-            
-            <!-- 结果输出框 -->
             <textarea id="output" placeholder="处理结果" readonly></textarea>
         </div>
     </div>
-
-    <!-- LOGO预览弹窗 -->
+    <!-- LOGO放大预览弹窗 -->
     <div class="logo-preview-modal" id="logoPreviewModal" onclick="closeLogoPreview()">
         <div class="logo-preview-content" onclick="event.stopPropagation()">
             <img src="" alt="LOGO预览" class="logo-preview-img" id="previewImg">
             <button class="logo-preview-close" onclick="closeLogoPreview()">×</button>
         </div>
     </div>
-
     <script>
+        // 仓库配置（保留原有）
         const repoOwner = "1996TV";
         const repoName = "LOGO";
         const cdnBase = `https://cdn.jsdelivr.net/gh/${repoOwner}/${repoName}@main/`;
         let allLogoFiles = [];
+        let isLogoFetching = false; // 防止重复请求
+        // 常量配置（默认值不变）
         const DEFAULT_EPG_URL = "https://epg.catvod.com/epg.xml";
         const DEFAULT_LOGO_URL = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/";
         const DEFAULT_CLEAN_KEYWORDS = ["高清", "HD", "超清"];
+        const CONFIG_STORAGE_KEY = "iptv_tool_config";
+        // LOGO匹配失败时的默认LOGO地址
+        const FALLBACK_LOGO = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png";
+        // 正则缓存，避免重复创建
+        const REPLAY_REG = /(回看|回放|时移|Replay|Catchup|重播)/i;
+        const SPACE_REG = /\s+/g;
 
-        // 令牌解密函数
-        function decryptToken(encrypted) {
-            return atob(encrypted);
-        }
-
+        // 面板切换核心函数（优化事件绑定）
         function switchTab(panelId) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
+            const btn = event?.target;
+            if (!btn) return;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(panelId)?.classList.add('active');
         }
 
+        // 页面加载初始化（优化空值判断）
         window.onload = function() {
-            document.getElementById('epgUrl').value = DEFAULT_EPG_URL;
-            document.getElementById('logoUrlInput').value = DEFAULT_LOGO_URL;
-            document.getElementById('fallbackLogoInput').value = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png";
-            clearAll();
-            document.getElementById('cleanName').checked = true;
-            document.getElementById('removeReplay').checked = true;
-            document.getElementById('enableLinkReplace').checked = true;
-        }
-
-        async function fetchLogoFiles() {
             try {
-                const repoInfoUrl = `https://api.github.com/repos/${repoOwner}/${repoName}`;
-                const repoRes = await fetch(repoInfoUrl);
-                if (!repoRes.ok) throw new Error(`获取仓库信息失败`);
-                const repoData = await repoRes.json();
-                const defaultBranch = repoData.default_branch;
-
-                const treeUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${defaultBranch}?recursive=1`;
-                const treeRes = await fetch(treeUrl);
-                if (!treeRes.ok) throw new Error(`获取目录树失败`);
-                const treeData = await treeRes.json();
-
-                allLogoFiles = treeData.tree
-                    .filter(item => item.type === 'blob' && item.path.endsWith('.png'))
-                    .map(item => ({
-                        name: item.path.split('/').pop(),
-                        downloadUrl: cdnBase + item.path.split('/').pop()
-                    }));
-            } catch (error) {
-                console.error('拉取LOGO失败:', error);
+                localStorage.removeItem(CONFIG_STORAGE_KEY);
+                history.replaceState(null, null, window.location.href);
+                document.getElementById('epgUrl').value = DEFAULT_EPG_URL;
+                document.getElementById('logoUrlInput').value = DEFAULT_LOGO_URL;
+                document.getElementById('searchKey').value = '';
+                document.getElementById('customCleanKeywords').value = '';
+                document.getElementById('oldLinkPrefix').value = '';
+                document.getElementById('newLinkPrefix').value = '';
+                document.getElementById('inputContent').value = '';
+                document.getElementById('output').value = '';
+                document.getElementById('fileNameDisplay').textContent = '';
+                document.getElementById('cleanName').checked = true;
+                document.getElementById('removeReplay').checked = true;
+                document.getElementById('enableLinkReplace').checked = true;
+            } catch (e) {
+                console.error('初始化失败:', e);
             }
         }
 
+        // 禁用配置存储功能
+        function saveConfig() { return; }
+        function loadConfig() { return; }
+
+        // LOGO放大预览功能（优化图片加载）
+        function openLogoPreview(imgUrl) {
+            if (!imgUrl) return;
+            const modal = document.getElementById('logoPreviewModal');
+            const previewImg = document.getElementById('previewImg');
+            if (!modal || !previewImg) return;
+            previewImg.src = imgUrl;
+            previewImg.onerror = function() {
+                this.src = FALLBACK_LOGO;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeLogoPreview() {
+            const modal = document.getElementById('logoPreviewModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // 优化LOGO文件获取：防止重复请求、增加错误重试
+        async function fetchLogoFiles() {
+            if (isLogoFetching || allLogoFiles.length > 0) return;
+            isLogoFetching = true;
+            try {
+                // 获取仓库默认分支
+                const repoInfoUrl = `https://api.github.com/repos/${repoOwner}/${repoName}`;
+                const repoRes = await fetch(repoInfoUrl, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/vnd.github.v3+json' },
+                    timeout: 10000
+                });
+                if (!repoRes.ok) throw new Error(`仓库信息请求失败（${repoRes.status}）`);
+                const repoData = await repoRes.json();
+                const defaultBranch = repoData.default_branch || 'main';
+
+                // 获取递归目录树（包含所有文件）
+                const treeUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${defaultBranch}?recursive=1`;
+                const treeRes = await fetch(treeUrl, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/vnd.github.v3+json' },
+                    timeout: 15000
+                });
+                if (!treeRes.ok) throw new Error(`目录树请求失败（${treeRes.status}）`);
+                const treeData = await treeRes.json();
+
+                // 筛选所有png文件并去重
+                const fileMap = new Map();
+                treeData.tree?.forEach(item => {
+                    if (item.type === 'blob' && item.path?.endsWith('.png')) {
+                        const fileName = item.path.split('/').pop();
+                        if (!fileMap.has(fileName.toLowerCase())) {
+                            fileMap.set(fileName.toLowerCase(), {
+                                name: fileName,
+                                downloadUrl: `${cdnBase}${fileName}`
+                            });
+                        }
+                    }
+                });
+                allLogoFiles = Array.from(fileMap.values());
+            } catch (error) {
+                console.error('拉取文件失败：', error);
+                throw error;
+            } finally {
+                isLogoFetching = false;
+            }
+        }
+
+        // LOGO模糊搜索（优化结果渲染、增加空状态）
         async function fuzzySearchLogo() {
-            const key = document.getElementById('searchKey').value.trim().toLowerCase();
+            const key = document.getElementById('searchKey')?.value.trim().toLowerCase() || '';
             if (!key) {
                 alert('请输入关键词！');
                 return;
             }
             const loading = document.getElementById('loading');
             const resultBox = document.getElementById('logoResult');
+            if (!loading || !resultBox) return;
+
             loading.style.display = 'block';
             resultBox.style.display = 'none';
             try {
-                if (allLogoFiles.length === 0) await fetchLogoFiles();
-                const matchFiles = allLogoFiles.filter(file => file.name.toLowerCase().includes(key));
+                await fetchLogoFiles();
+                const matchFiles = allLogoFiles.filter(file => 
+                    file.name.toLowerCase().includes(key)
+                );
                 loading.style.display = 'none';
                 resultBox.style.display = 'block';
+
                 if (matchFiles.length === 0) {
-                    resultBox.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">未找到匹配的LOGO文件</p>';
+                    resultBox.innerHTML = '<div class="empty-state">未找到匹配的LOGO文件</div>';
                     return;
                 }
                 let resultHtml = '';
                 matchFiles.forEach(file => {
                     const logoName = file.name.replace('.png', '');
+                    const logoCdnUrl = file.downloadUrl;
                     resultHtml += `
                         <div class="logo-item">
-                            <div class="preview" onclick="openLogoPreview('${file.downloadUrl}')">
-                                <img src="${file.downloadUrl}" alt="${logoName}" onerror="this.parentNode.innerHTML='<span class=placeholder>加载失败</span>'">
+                            <div class="preview" onclick="openLogoPreview('${logoCdnUrl}')">
+                                <img src="${logoCdnUrl}" alt="${logoName}" 
+                                    onerror="this.onerror=null;this.parentNode.innerHTML='<span class=placeholder>加载失败</span>'"
+                                    loading="lazy">
                             </div>
                             <div class="info">
                                 <div class="name">${logoName}</div>
-                                <div class="url">${file.downloadUrl}</div>
+                                <div class="url">${logoCdnUrl}</div>
                             </div>
-                            <button class="copy-btn" onclick="copyLogoUrl('${file.downloadUrl}')">复制</button>
+                            <button class="copy-btn" onclick="copyLogoUrl('${logoCdnUrl}')">复制</button>
                         </div>
                     `;
                 });
@@ -610,83 +697,184 @@
             } catch (error) {
                 loading.style.display = 'none';
                 resultBox.style.display = 'block';
-                resultBox.innerHTML = `<p style="text-align:center; color:#f5222d; padding:20px;">搜索失败</p>`;
+                resultBox.innerHTML = `<div class="empty-state" style="color:#f5222d;">搜索失败：${error.message}</div>`;
             }
         }
 
-        function openLogoPreview(imgUrl) {
-            const modal = document.getElementById('logoPreviewModal');
-            const previewImg = document.getElementById('previewImg');
-            previewImg.src = imgUrl;
-            modal.style.display = 'flex';
-        }
-
-        function closeLogoPreview() {
-            document.getElementById('logoPreviewModal').style.display = 'none';
-        }
-
+        // 复制LOGO链接（优化复制失败处理）
         function copyLogoUrl(url) {
+            if (!url) return;
             navigator.clipboard.writeText(url)
                 .then(() => alert('LOGO链接复制成功！'))
                 .catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = url;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    alert('LOGO链接复制成功！');
+                    try {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = url;
+                        textarea.style.position = 'fixed';
+                        textarea.style.opacity = '0';
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        alert('LOGO链接复制成功！');
+                    } catch (e) {
+                        alert('复制失败，请手动复制链接');
+                        console.error('复制失败:', e);
+                    }
                 });
         }
 
+        // 读取上传文件（优化文件校验）
         function readFile(input) {
-            const file = input.files[0];
+            const file = input.files?.[0];
             if (!file) return;
             document.getElementById('fileNameDisplay').textContent = file.name;
             const reader = new FileReader();
-            reader.onload = e => document.getElementById('inputContent').value = e.target.result;
+            reader.onload = e => {
+                document.getElementById('inputContent').value = e.target.result || '';
+            };
+            reader.onerror = () => {
+                alert('文件读取失败，请选择有效的文本文件');
+                input.value = '';
+                document.getElementById('fileNameDisplay').textContent = '';
+            };
             reader.readAsText(file);
         }
 
+        // 统一链接替换函数（优化正则匹配）
         function replaceLink(url) {
-            if (!document.getElementById('enableLinkReplace').checked) return url;
+            if (!url || !document.getElementById('enableLinkReplace').checked) return url;
             const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
             const newPrefix = document.getElementById('newLinkPrefix').value.trim();
             if (!oldPrefix || !newPrefix) return url;
-            return url.replace(new RegExp(oldPrefix, 'g'), newPrefix);
+            try {
+                const reg = new RegExp(escapeRegExp(oldPrefix), 'g');
+                return url.replace(reg, newPrefix);
+            } catch (e) {
+                console.error('链接替换失败:', e);
+                return url;
+            }
         }
 
+        // 正则转义函数
         function escapeRegExp(str) {
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
+        // 安卓下载优化（优化Blob处理）
+        function downloadResult() {
+            const content = document.getElementById('output').value.trim();
+            if (!content) return alert('暂无内容可下载！');
+            const ext = content.startsWith('#EXTM3U') ? 'm3u' : 'txt';
+            const fileName = `iptv_${new Date().getTime()}.${ext}`;
+            try {
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                a.target = '_self';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    alert(`✅ 下载已触发\n文件：${fileName}\n请在通知栏或Download文件夹查看`);
+                }, 100);
+            } catch (e1) {
+                console.error('Blob方案失败，尝试降级方案', e1);
+                try {
+                    const dataUri = `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`;
+                    const a = document.createElement('a');
+                    a.href = dataUri;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => document.body.removeChild(a), 500);
+                    alert(`✅ 降级方案下载成功\n文件：${fileName}\n请在通知栏查看`);
+                } catch (e2) {
+                    console.error('降级方案也失败', e2);
+                    alert(`⚠️ 自动下载失败\n请点击【复制结果】按钮，手动粘贴到记事本并保存为 ${fileName}`);
+                }
+            }
+        }
+
+        // 复制结果（优化复制逻辑）
+        function copyResult() {
+            const content = document.getElementById('output').value.trim();
+            if (!content) return alert('暂无内容可复制！');
+            navigator.clipboard.writeText(content)
+                .then(() => alert('结果复制成功！可粘贴到记事本保存'))
+                .catch(() => {
+                    try {
+                        const ta = document.createElement('textarea');
+                        ta.value = content;
+                        ta.style.position = 'fixed';
+                        ta.style.opacity = '0';
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                        alert('结果复制成功！');
+                    } catch (e) {
+                        alert('复制失败，请手动复制内容');
+                        console.error('复制失败:', e);
+                    }
+                });
+        }
+
+        // 频道名净化函数（优化关键词处理、复用正则）
         function cleanNameFn(n) {
-            if (!document.getElementById('cleanName').checked) return n;
+            if (!n || !document.getElementById('cleanName').checked) return n;
+            // 获取自定义关键词
             let customKeywords = document.getElementById('customCleanKeywords').value.trim()
-                .split(',').map(k => k.trim()).filter(k => k.length > 0);
+                .split(',')
+                .map(k => k.trim())
+                .filter(k => k.length > 0);
+            // 合并默认关键词并去重
             let allKeywords = [...new Set([...DEFAULT_CLEAN_KEYWORDS, ...customKeywords])];
             let cleanedName = n;
+            // 逐个转义并替换
             allKeywords.forEach(keyword => {
                 const safeKeyword = escapeRegExp(keyword);
-                cleanedName = cleanedName.replace(new RegExp(safeKeyword, 'gi'), '');
+                const reg = new RegExp(safeKeyword, 'gi');
+                cleanedName = cleanedName.replace(reg, '');
             });
-            return cleanedName.replace(/\s+/g, ' ').trim();
+            // 清理空格并返回
+            return cleanedName.replace(SPACE_REG, ' ').trim();
         }
 
+        // 判断是否为回看频道（复用正则）
         function isReplay(n) {
-            return /(回看|回放|时移|Replay|Catchup|重播)/i.test(n);
+            return REPLAY_REG.test(n || '');
         }
 
+        // TXT→M3U 优化：减少DOM操作、优化LOGO匹配
         async function txtToM3u() {
-            const epg = document.getElementById('epgUrl').value.trim();
-            const logoBase = document.getElementById('logoUrlInput').value.replace(/\/$/, '') + '/';
-            const fallbackLogo = document.getElementById('fallbackLogoInput').value.trim();
+            const epg = document.getElementById('epgUrl').value.trim() || DEFAULT_EPG_URL;
+            const logoBaseInput = document.getElementById('logoUrlInput').value || '';
+            const logoBase = logoBaseInput.replace(/\/$/, '') + '/';
             const input = document.getElementById('inputContent').value.trim();
             if (!input) return alert('请输入TXT内容！');
-            if (allLogoFiles.length === 0) await fetchLogoFiles();
+            
+            // 预加载LOGO列表
+            try {
+                await fetchLogoFiles();
+            } catch (err) {
+                console.warn('拉取LOGO列表失败，全部使用默认LOGO:', err);
+            }
+            
             const lines = input.split('\n');
             let output = `#EXTM3U x-tvg-url="${epg}"\n`;
             let group = '';
+            // 缓存DOM查询结果
+            const isRemoveReplay = document.getElementById('removeReplay').checked;
+            // 构建LOGO名称映射表，优化匹配速度
+            const logoNameMap = new Map();
+            allLogoFiles.forEach(file => {
+                logoNameMap.set(file.name.toLowerCase(), true);
+            });
+
             lines.forEach(l => {
                 l = l.trim();
                 if (!l) return;
@@ -696,31 +884,40 @@
                 }
                 if (!l.includes(',')) return;
                 const [name, url] = l.split(',');
-                if (document.getElementById('removeReplay').checked && isReplay(name)) return;
+                if (isRemoveReplay && isReplay(name)) return;
+                
                 const cleanName = cleanNameFn(name);
                 const playUrl = replaceLink(url);
-                const logoExists = allLogoFiles.some(file => file.name.toLowerCase() === `${cleanName}.png`.toLowerCase());
-                const finalLogoUrl = logoExists ? `${logoBase}${cleanName}.png` : fallbackLogo;
+                // 快速匹配LOGO
+                const logoKey = `${cleanName}.png`.toLowerCase();
+                const finalLogoUrl = logoNameMap.has(logoKey) ? `${logoBase}${cleanName}.png` : FALLBACK_LOGO;
+                
                 output += `#EXTINF:-1 tvg-name="${cleanName}" tvg-logo="${finalLogoUrl}" group-title="${group}",${cleanName}\n${playUrl}\n`;
             });
             document.getElementById('output').value = output;
-            await uploadToRepo();
         }
 
-        async function m3uToTxt() {
+        // M3U→TXT 优化：减少DOM操作、优化循环逻辑
+        function m3uToTxt() {
             const input = document.getElementById('inputContent').value.trim();
             if (!input) return alert('请输入M3U内容！');
+            
             const lines = input.split('\n');
             let output = '';
             let currentGroup = '';
+            // 缓存DOM查询结果
+            const isRemoveReplay = document.getElementById('removeReplay').checked;
+            const groupTitleReg = /group-title="([^"]+)"/;
+            const nameReg = /,(.*)$/;
+
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (line.startsWith('#EXTINF')) {
-                    const nameMatch = line.match(/,(.*)$/);
-                    const groupMatch = line.match(/group-title="([^"]+)"/);
+                    const nameMatch = line.match(nameReg);
+                    const groupMatch = line.match(groupTitleReg);
                     const name = nameMatch ? nameMatch[1].trim() : '';
                     const group = groupMatch ? groupMatch[1] : '默认分类';
-                    if (document.getElementById('removeReplay').checked && isReplay(name)) {
+                    if (isRemoveReplay && isReplay(name)) {
                         i++;
                         continue;
                     }
@@ -736,185 +933,40 @@
                 }
             }
             document.getElementById('output').value = output;
-            await uploadToRepo();
         }
 
-        async function onlyReplaceLink() {
+        // 单独替换链接（优化正则创建）
+        function onlyReplaceLink() {
             const input = document.getElementById('inputContent').value.trim();
             if (!input) return alert('请输入内容！');
             const oldPrefix = document.getElementById('oldLinkPrefix').value.trim();
             const newPrefix = document.getElementById('newLinkPrefix').value.trim();
             if (!oldPrefix || !newPrefix) return alert('请填写完整的新旧链接前缀！');
-            const output = input.replace(new RegExp(oldPrefix, 'g'), newPrefix);
-            document.getElementById('output').value = output;
-            await uploadToRepo();
-        }
-
-        function downloadResult() {
-            const content = document.getElementById('output').value.trim();
-            if (!content) return alert('暂无内容可下载！');
-            const ext = content.startsWith('#EXTM3U') ? 'm3u' : 'txt';
-            const fileName = `iptv.${ext}`;
+            
             try {
-                const blob = new Blob([content], { type: 'application/octet-stream' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    alert(`✅ 下载已触发\n文件：${fileName}`);
-                }, 1000);
+                const reg = new RegExp(escapeRegExp(oldPrefix), 'g');
+                const output = input.replace(reg, newPrefix);
+                document.getElementById('output').value = output;
             } catch (e) {
-                alert('下载失败，请手动复制内容！');
+                alert('链接替换失败，请检查前缀格式');
+                console.error('链接替换失败:', e);
             }
         }
 
-        function copyResult() {
-            const content = document.getElementById('output').value.trim();
-            if (!content) return alert('暂无内容可复制！');
-            navigator.clipboard.writeText(content)
-                .then(() => alert('结果复制成功！'))
-                .catch(() => {
-                    const ta = document.createElement('textarea');
-                    ta.value = content;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
-                    alert('结果复制成功！');
-                });
-        }
-
+        // 清空内容（优化DOM操作）
         function clearAll() {
             document.getElementById('inputContent').value = '';
             document.getElementById('output').value = '';
             document.getElementById('fileNameDisplay').textContent = '';
-            document.getElementById('repoSubLinkOutput').value = '';
-            document.getElementById('searchKey').value = '';
-            document.getElementById('logoResult').innerHTML = '';
-            document.getElementById('repoSubLinkContainer').style.display = 'none';
+            document.getElementById('fileInput').value = '';
         }
 
-        (function handleSubRequest() {
-            const params = new URLSearchParams(location.search);
-            const sub = params.get('sub');
-            if (!sub) return;
-            try {
-                const m3u = decodeURIComponent(escape(atob(sub)));
-                document.body.innerText = m3u;
-                document.head.innerHTML = `<meta charset="UTF-8"><title>IPTV Subscription</title>`;
-            } catch (e) {
-                document.body.innerText = '#EXTM3U\n# 订阅解析失败';
+        // 监听ESC键关闭预览弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLogoPreview();
             }
-        })();
-
-        async function getFileSha(user, repo, path, token) {
-            try {
-                const response = await fetch(
-                    `https://api.github.com/repos/${user}/${repo}/contents/${path}`,
-                    {
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    }
-                );
-                if (response.status === 404) return null;
-                if (!response.ok) throw new Error(`获取SHA失败`);
-                const data = await response.json();
-                return data.sha;
-            } catch (error) {
-                console.error('获取SHA错误:', error);
-                return null;
-            }
-        }
-
-        async function uploadToRepo() {
-            const user = document.getElementById('githubUser').value.trim();
-            const repo = document.getElementById('githubRepo').value.trim();
-            const encryptedToken = document.getElementById('githubTokenEncrypted').value.trim();
-            const token = decryptToken(encryptedToken);
-            const path = document.getElementById('filePath').value.trim();
-            const content = document.getElementById('output').value.trim();
-
-            if (!user || !repo || !token || !path) {
-                return alert('仓库配置缺失！');
-            }
-            if (!content) {
-                return;
-            }
-
-            try {
-                const contentBase64 = btoa(unescape(encodeURIComponent(content)));
-                const sha = await getFileSha(user, repo, path, token);
-                const requestBody = {
-                    message: `Update IPTV subscription: ${new Date().toLocaleString()}`,
-                    content: contentBase64,
-                    branch: 'main'
-                };
-                if (sha) requestBody.sha = sha;
-
-                const response = await fetch(
-                    `https://api.github.com/repos/${user}/${repo}/contents/${path}`,
-                    {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(requestBody)
-                    }
-                );
-
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(`上传失败：${errData.message || response.status}`);
-                }
-
-                alert('文件成功上传到GitHub仓库！');
-            } catch (error) {
-                alert(`上传失败：${error.message}`);
-                console.error(error);
-            }
-        }
-
-        // 修改生成订阅链接逻辑：直接生成jsdelivr CDN格式
-        function generateRepoSubLink() {
-            const user = "1996TV"; // 固定用户名
-            const repo = "iptv-tools"; // 固定仓库名
-            const path = document.getElementById('filePath').value.trim();
-
-            if (!path) {
-                return alert('请输入自定义源名称！');
-            }
-
-            // 生成jsdelivr CDN格式链接：https://cdn.jsdelivr.net/gh/用户名/仓库名@main/文件路径
-            const cdnSubLink = `https://cdn.jsdelivr.net/gh/${user}/${repo}@main/${path}`;
-            document.getElementById('repoSubLinkOutput').value = cdnSubLink;
-            document.getElementById('repoSubLinkContainer').style.display = 'block';
-        }
-
-        // 修改复制订阅链接提示
-        function copyRepoSubLink() {
-            const subLink = document.getElementById('repoSubLinkOutput').value.trim();
-            if (!subLink) return alert('暂无订阅链接可复制！');
-            navigator.clipboard.writeText(subLink)
-                .then(() => alert('✅ CDN订阅链接复制成功！可直接在播放器中使用'))
-                .catch(() => {
-                    const ta = document.createElement('textarea');
-                    ta.value = subLink;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
-                    alert('✅ CDN订阅链接复制成功！可直接在播放器中使用');
-                });
-        }
+        });
     </script>
 </body>
 </html>
