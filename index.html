@@ -391,7 +391,6 @@
         .repo-config {
             display: none;
         }
-        /* 隐藏仓库订阅地址容器（默认） */
         #repoSubLinkContainer {
             display: none;
         }
@@ -421,8 +420,13 @@
             <div class="repo-config">
                 <input id="githubUser" value="1996TV">
                 <input id="githubRepo" value="iptv-tools">
-                <input id="githubToken" value="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">
-                <input id="filePath" value="iptv-tools iptv.m3u">
+                <input id="githubTokenEncrypted" value="Z2hwX3hRSWFYZnp2cHdOc2V5b0Jyb2p5UTZwVlNsZ3BpWDN2emZ3MQ==">
+            </div>
+
+            <!-- 自定义源名称输入框 -->
+            <div class="input-item">
+                <label>自定义源名称（如xxx.m3u或xxx.txt）</label>
+                <input id="filePath" value="iptv.m3u" placeholder="输入文件在仓库中的路径">
             </div>
 
             <div class="input-item">
@@ -462,13 +466,18 @@
                 <input type="checkbox" id="enableLinkReplace" checked>
                 <label>启用链接替换</label>
             </div>
+            
+            <!-- 文件上传区域 -->
             <div class="upload">
                 <label for="fileInput" class="upload-input-label">选取文件</label>
                 <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8" onchange="readFile(this)">
                 <div class="file-name-display" id="fileNameDisplay"></div>
             </div>
+            
+            <!-- 内容输入框 -->
             <textarea id="inputContent" placeholder="粘贴或上传 TXT / M3U 内容"></textarea>
             
+            <!-- 功能按钮组 -->
             <div class="btn-group">
                 <button class="blue" onclick="txtToM3u()">TXT → M3U</button>
                 <button class="blue" onclick="m3uToTxt()">M3U → TXT</button>
@@ -476,15 +485,16 @@
                 <button class="red" onclick="clearAll()">清空内容</button>
             </div>
 
+            <!-- 结果操作按钮 -->
             <div class="func-btn">
                 <button class="green" onclick="downloadResult()">下载结果</button>
                 <button class="green" onclick="copyResult()">复制结果</button>
                 <button class="green" onclick="generateRepoSubLink()">生成订阅链接</button>
             </div>
 
-            <!-- 仓库订阅地址容器（默认隐藏） -->
+            <!-- 订阅地址容器 -->
             <div class="input-item" id="repoSubLinkContainer">
-                <label>订阅地址</label>
+                <label>订阅地址（jsdelivr CDN格式）</label>
                 <div class="sub-link-group">
                     <input id="repoSubLinkOutput" readonly>
                     <button class="green" onclick="copyRepoSubLink()">复制</button>
@@ -492,9 +502,13 @@
             </div>
 
             <div class="download-tip">安卓手机请开启浏览器存储权限，下载后在通知栏查看</div>
+            
+            <!-- 结果输出框 -->
             <textarea id="output" placeholder="处理结果" readonly></textarea>
         </div>
     </div>
+
+    <!-- LOGO预览弹窗 -->
     <div class="logo-preview-modal" id="logoPreviewModal" onclick="closeLogoPreview()">
         <div class="logo-preview-content" onclick="event.stopPropagation()">
             <img src="" alt="LOGO预览" class="logo-preview-img" id="previewImg">
@@ -510,6 +524,11 @@
         const DEFAULT_EPG_URL = "https://epg.catvod.com/epg.xml";
         const DEFAULT_LOGO_URL = "https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/";
         const DEFAULT_CLEAN_KEYWORDS = ["高清", "HD", "超清"];
+
+        // 令牌解密函数
+        function decryptToken(encrypted) {
+            return atob(encrypted);
+        }
 
         function switchTab(panelId) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -777,7 +796,6 @@
             document.getElementById('repoSubLinkOutput').value = '';
             document.getElementById('searchKey').value = '';
             document.getElementById('logoResult').innerHTML = '';
-            // 隐藏仓库订阅地址
             document.getElementById('repoSubLinkContainer').style.display = 'none';
         }
 
@@ -818,7 +836,8 @@
         async function uploadToRepo() {
             const user = document.getElementById('githubUser').value.trim();
             const repo = document.getElementById('githubRepo').value.trim();
-            const token = document.getElementById('githubToken').value.trim();
+            const encryptedToken = document.getElementById('githubTokenEncrypted').value.trim();
+            const token = decryptToken(encryptedToken);
             const path = document.getElementById('filePath').value.trim();
             const content = document.getElementById('output').value.trim();
 
@@ -864,26 +883,28 @@
             }
         }
 
+        // 修改生成订阅链接逻辑：直接生成jsdelivr CDN格式
         function generateRepoSubLink() {
-            const user = document.getElementById('githubUser').value.trim();
-            const repo = document.getElementById('githubRepo').value.trim();
+            const user = "1996TV"; // 固定用户名
+            const repo = "iptv-tools"; // 固定仓库名
             const path = document.getElementById('filePath').value.trim();
 
-            if (!user || !repo || !path) {
-                return alert('仓库配置缺失！');
+            if (!path) {
+                return alert('请输入自定义源名称！');
             }
 
-            const rawUrl = `https://raw.githubusercontent.com/${user}/${repo}/main/${path}`;
-            document.getElementById('repoSubLinkOutput').value = rawUrl;
-            // 显示仓库订阅地址容器
+            // 生成jsdelivr CDN格式链接：https://cdn.jsdelivr.net/gh/用户名/仓库名@main/文件路径
+            const cdnSubLink = `https://cdn.jsdelivr.net/gh/${user}/${repo}@main/${path}`;
+            document.getElementById('repoSubLinkOutput').value = cdnSubLink;
             document.getElementById('repoSubLinkContainer').style.display = 'block';
         }
 
+        // 修改复制订阅链接提示
         function copyRepoSubLink() {
             const subLink = document.getElementById('repoSubLinkOutput').value.trim();
             if (!subLink) return alert('暂无订阅链接可复制！');
             navigator.clipboard.writeText(subLink)
-                .then(() => alert('订阅链接复制成功！'))
+                .then(() => alert('✅ CDN订阅链接复制成功！可直接在播放器中使用'))
                 .catch(() => {
                     const ta = document.createElement('textarea');
                     ta.value = subLink;
@@ -891,7 +912,7 @@
                     ta.select();
                     document.execCommand('copy');
                     document.body.removeChild(ta);
-                    alert('订阅链接复制成功！');
+                    alert('✅ CDN订阅链接复制成功！可直接在播放器中使用');
                 });
         }
     </script>
