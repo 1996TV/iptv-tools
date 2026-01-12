@@ -1,0 +1,291 @@
+#EXTM3U x-tvg-url="https://epg.catvod.com/epg.xml"
+#EXTINF:-1 tvg-name="民視第一台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",民視第一台
+https://4gtv.iill.top/4gtv/1
+#EXTINF:-1 tvg-name="民視台灣台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",民視台灣台
+https://4gtv.iill.top/4gtv/2
+#EXTINF:-1 tvg-name="民視" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",民視
+https://4gtv.iill.top/4gtv/3
+#EXTINF:-1 tvg-name="TVBS" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",TVBS
+https://4gtv.iill.top/4gtv/183
+#EXTINF:-1 tvg-name="中視" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",中視
+https://4gtv.iill.top/4gtv/4
+#EXTINF:-1 tvg-name="華視" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",華視
+https://4gtv.iill.top/4gtv/6
+#EXTINF:-1 tvg-name="原住民族電視台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",原住民族電視台
+https://4gtv.iill.top/4gtv/273
+#EXTINF:-1 tvg-name="大愛電視" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",大愛電視
+https://4gtv.iill.top/4gtv/209
+#EXTINF:-1 tvg-name="新唐人亞太台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",新唐人亞太台
+https://4gtv.iill.top/4gtv/223
+#EXTINF:-1 tvg-name="國會頻道2" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",國會頻道2
+https://4gtv.iill.top/4gtv/171
+#EXTINF:-1 tvg-name="國會頻道1" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",國會頻道1
+https://4gtv.iill.top/4gtv/170
+#EXTINF:-1 tvg-name="中視菁采台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",中視菁采台
+https://4gtv.iill.top/4gtv/123
+#EXTINF:-1 tvg-name="三立綜合台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",三立綜合台
+https://4gtv.iill.top/4gtv/169
+#EXTINF:-1 tvg-name="靖天日本台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",靖天日本台
+https://4gtv.iill.top/4gtv/22
+#EXTINF:-1 tvg-name="達文西頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",達文西頻道
+https://4gtv.iill.top/4gtv/11
+#EXTINF:-1 tvg-name="ARIRANG阿里郎頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",ARIRANG阿里郎頻道
+https://4gtv.iill.top/4gtv/189
+#EXTINF:-1 tvg-name="中視經典台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",中視經典台
+https://4gtv.iill.top/4gtv/124
+#EXTINF:-1 tvg-name="客家電視台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",客家電視台
+https://4gtv.iill.top/4gtv/107
+#EXTINF:-1 tvg-name="好消息" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",好消息
+https://4gtv.iill.top/4gtv/9
+#EXTINF:-1 tvg-name="好消息2台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",好消息2台
+https://4gtv.iill.top/4gtv/8
+#EXTINF:-1 tvg-name="大愛二台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",大愛二台
+https://4gtv.iill.top/4gtv/230
+#EXTINF:-1 tvg-name="人間衛視" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",人間衛視
+https://4gtv.iill.top/4gtv/210
+#EXTINF:-1 tvg-name="FRANCE24 英文台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综合",FRANCE24 英文台
+https://4gtv.iill.top/4gtv/316
+#EXTINF:-1 tvg-name="民視新聞台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",民視新聞台
+https://4gtv.iill.top/4gtv/31
+#EXTINF:-1 tvg-name="TVBS新聞" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",TVBS新聞
+https://4gtv.iill.top/4gtv/291
+#EXTINF:-1 tvg-name="東森新聞台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",東森新聞台
+https://4gtv.iill.top/4gtv/292
+#EXTINF:-1 tvg-name="中視新聞" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",中視新聞
+https://4gtv.iill.top/4gtv/33
+#EXTINF:-1 tvg-name="華視新聞" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",華視新聞
+https://4gtv.iill.top/4gtv/34
+#EXTINF:-1 tvg-name="寰宇新聞台灣台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",寰宇新聞台灣台
+https://4gtv.iill.top/4gtv/280
+#EXTINF:-1 tvg-name="寰宇新聞台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",寰宇新聞台
+https://4gtv.iill.top/4gtv/36
+#EXTINF:-1 tvg-name="鏡電視新聞台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",鏡電視新聞台
+https://4gtv.iill.top/4gtv/268
+#EXTINF:-1 tvg-name="中天新聞台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",中天新聞台
+https://4gtv.iill.top/4gtv/30
+#EXTINF:-1 tvg-name="三立新聞iNEWS" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",三立新聞iNEWS
+https://4gtv.iill.top/4gtv/229
+#EXTINF:-1 tvg-name="半島國際新聞台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",半島國際新聞台
+https://4gtv.iill.top/4gtv/462
+#EXTINF:-1 tvg-name="東森財經新聞台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",東森財經新聞台
+https://4gtv.iill.top/4gtv/293
+#EXTINF:-1 tvg-name="SBN全球財經台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",SBN全球財經台
+https://4gtv.iill.top/4gtv/224
+#EXTINF:-1 tvg-name="KLT-靖天國際台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",KLT-靖天國際台
+https://4gtv.iill.top/4gtv/84
+#EXTINF:-1 tvg-name="靖天資訊台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",靖天資訊台
+https://4gtv.iill.top/4gtv/88
+#EXTINF:-1 tvg-name="NHK WORLD-JAPAN" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",NHK WORLD-JAPAN
+https://4gtv.iill.top/4gtv/461
+#EXTINF:-1 tvg-name="鳳梨直擊台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",鳳梨直擊台
+https://4gtv.iill.top/4gtv/93
+#EXTINF:-1 tvg-name="香蕉直擊台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",香蕉直擊台
+https://4gtv.iill.top/4gtv/94
+#EXTINF:-1 tvg-name="CNBC Asia 財經台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 新闻",CNBC Asia 財經台
+https://4gtv.iill.top/4gtv/235
+#EXTINF:-1 tvg-name="TRACE Sport Stars" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 体育",TRACE Sport Stars
+https://4gtv.iill.top/4gtv/57
+#EXTINF:-1 tvg-name="時尚運動X" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 体育",時尚運動X
+https://4gtv.iill.top/4gtv/69
+#EXTINF:-1 tvg-name="GINX Esports TV" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 体育",GINX Esports TV
+https://4gtv.iill.top/4gtv/179
+#EXTINF:-1 tvg-name="智林體育台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 体育",智林體育台
+https://4gtv.iill.top/4gtv/58
+#EXTINF:-1 tvg-name="東森購物一台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 购物",東森購物一台
+https://4gtv.iill.top/4gtv/173
+#EXTINF:-1 tvg-name="東森購物二台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 购物",東森購物二台
+https://4gtv.iill.top/4gtv/174
+#EXTINF:-1 tvg-name="東森購物三台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 购物",東森購物三台
+https://4gtv.iill.top/4gtv/287
+#EXTINF:-1 tvg-name="東森購物四台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 购物",東森購物四台
+https://4gtv.iill.top/4gtv/286
+#EXTINF:-1 tvg-name="民視綜藝台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",民視綜藝台
+https://4gtv.iill.top/4gtv/16
+#EXTINF:-1 tvg-name="TVBS綜藝台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",TVBS綜藝台
+https://4gtv.iill.top/4gtv/284
+#EXTINF:-1 tvg-name="Love Nature" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",Love Nature
+https://4gtv.iill.top/4gtv/139
+#EXTINF:-1 tvg-name="靖天綜合台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",靖天綜合台
+https://4gtv.iill.top/4gtv/21
+#EXTINF:-1 tvg-name="TVBS歡樂台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",TVBS歡樂台
+https://4gtv.iill.top/4gtv/184
+#EXTINF:-1 tvg-name="韓國娛樂台 KMTV" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",韓國娛樂台 KMTV
+https://4gtv.iill.top/4gtv/446
+#EXTINF:-1 tvg-name="八大綜藝台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",八大綜藝台
+https://4gtv.iill.top/4gtv/114
+#EXTINF:-1 tvg-name="TVBS精采台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",TVBS精采台
+https://4gtv.iill.top/4gtv/227
+#EXTINF:-1 tvg-name="豬哥亮歌廳秀" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",豬哥亮歌廳秀
+https://4gtv.iill.top/4gtv/113
+#EXTINF:-1 tvg-name="愛爾達娛樂台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",愛爾達娛樂台
+https://4gtv.iill.top/4gtv/19
+#EXTINF:-1 tvg-name="Nice TV 靖天歡樂台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",Nice TV 靖天歡樂台
+https://4gtv.iill.top/4gtv/119
+#EXTINF:-1 tvg-name="fun探索娛樂台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺",fun探索娛樂台
+https://4gtv.iill.top/4gtv/274
+#EXTINF:-1 tvg-name="TVBS台劇台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",TVBS台劇台
+https://4gtv.iill.top/4gtv/285
+#EXTINF:-1 tvg-name="民視影劇台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",民視影劇台
+https://4gtv.iill.top/4gtv/24
+#EXTINF:-1 tvg-name="八大精彩台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",八大精彩台
+https://4gtv.iill.top/4gtv/172
+#EXTINF:-1 tvg-name="靖天戲劇台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",靖天戲劇台
+https://4gtv.iill.top/4gtv/116
+#EXTINF:-1 tvg-name="靖洋戲劇台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",靖洋戲劇台
+https://4gtv.iill.top/4gtv/118
+#EXTINF:-1 tvg-name="靖天映畫" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",靖天映畫
+https://4gtv.iill.top/4gtv/42
+#EXTINF:-1 tvg-name="公視戲劇" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",公視戲劇
+https://4gtv.iill.top/4gtv/7
+#EXTINF:-1 tvg-name="靖天育樂台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",靖天育樂台
+https://4gtv.iill.top/4gtv/83
+#EXTINF:-1 tvg-name="尼克兒童頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",尼克兒童頻道
+https://4gtv.iill.top/4gtv/185
+#EXTINF:-1 tvg-name="霹靂布袋戲" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",霹靂布袋戲
+https://4gtv.iill.top/4gtv/301
+#EXTINF:-1 tvg-name="金光布袋戲" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",金光布袋戲
+https://4gtv.iill.top/4gtv/236
+#EXTINF:-1 tvg-name="戲劇免費看 1台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",戲劇免費看 1台
+https://4gtv.iill.top/4gtv/270
+#EXTINF:-1 tvg-name="精選動漫台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",精選動漫台
+https://4gtv.iill.top/4gtv/204
+#EXTINF:-1 tvg-name="DreamWorks 夢工廠動畫" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",DreamWorks 夢工廠動畫
+https://4gtv.iill.top/4gtv/282
+#EXTINF:-1 tvg-name="MOMO親子台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",MOMO親子台
+https://4gtv.iill.top/4gtv/231
+#EXTINF:-1 tvg-name="靖天卡通台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",靖天卡通台
+https://4gtv.iill.top/4gtv/15
+#EXTINF:-1 tvg-name="靖洋卡通Nice Bingo" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",靖洋卡通Nice Bingo
+https://4gtv.iill.top/4gtv/59
+#EXTINF:-1 tvg-name="經典卡通台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",經典卡通台
+https://4gtv.iill.top/4gtv/202
+#EXTINF:-1 tvg-name="Nick Jr. 兒童頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",Nick Jr. 兒童頻道
+https://4gtv.iill.top/4gtv/219
+#EXTINF:-1 tvg-name="采昌影劇台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 戏剧",采昌影劇台
+https://4gtv.iill.top/4gtv/25
+#EXTINF:-1 tvg-name="amc電影台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 电影",amc電影台
+https://4gtv.iill.top/4gtv/39
+#EXTINF:-1 tvg-name="My Cinema Europe 我的歐洲電影" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 电影",My Cinema Europe 我的歐洲電影
+https://4gtv.iill.top/4gtv/463
+#EXTINF:-1 tvg-name="靖天電影台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 电影",靖天電影台
+https://4gtv.iill.top/4gtv/82
+#EXTINF:-1 tvg-name="經典電影台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 电影",經典電影台
+https://4gtv.iill.top/4gtv/201
+#EXTINF:-1 tvg-name="影迷數位電影台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 电影",影迷數位電影台
+https://4gtv.iill.top/4gtv/40
+#EXTINF:-1 tvg-name="ROCK Entertainment" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 电影",ROCK Entertainment
+https://4gtv.iill.top/4gtv/275
+#EXTINF:-1 tvg-name="ROCK Action" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 电影",ROCK Action
+https://4gtv.iill.top/4gtv/180
+#EXTINF:-1 tvg-name="History 歷史頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",History 歷史頻道
+https://4gtv.iill.top/4gtv/214
+#EXTINF:-1 tvg-name="Lifetime 娛樂頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",Lifetime 娛樂頻道
+https://4gtv.iill.top/4gtv/217
+#EXTINF:-1 tvg-name="Global Trekker" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",Global Trekker
+https://4gtv.iill.top/4gtv/252
+#EXTINF:-1 tvg-name="ELTV生活英語台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",ELTV生活英語台
+https://4gtv.iill.top/4gtv/106
+#EXTINF:-1 tvg-name="LiveABC互動英語頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",LiveABC互動英語頻道
+https://4gtv.iill.top/4gtv/188
+#EXTINF:-1 tvg-name="CinemaWorld" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",CinemaWorld
+https://4gtv.iill.top/4gtv/225
+#EXTINF:-1 tvg-name="視納華仁紀實頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",視納華仁紀實頻道
+https://4gtv.iill.top/4gtv/38
+#EXTINF:-1 tvg-name="HITS頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",HITS頻道
+https://4gtv.iill.top/4gtv/186
+#EXTINF:-1 tvg-name="TV5MONDE STYLE 生活時尚" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",TV5MONDE STYLE 生活時尚
+https://4gtv.iill.top/4gtv/178
+#EXTINF:-1 tvg-name="LUXE TV Channel" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",LUXE TV Channel
+https://4gtv.iill.top/4gtv/175
+#EXTINF:-1 tvg-name="民視旅遊台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",民視旅遊台
+https://4gtv.iill.top/4gtv/61
+#EXTINF:-1 tvg-name="幸福空間居家台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",幸福空間居家台
+https://4gtv.iill.top/4gtv/168
+#EXTINF:-1 tvg-name="DW德國之聲" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",DW德國之聲
+https://4gtv.iill.top/4gtv/226
+#EXTINF:-1 tvg-name="愛爾達生活旅遊台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",愛爾達生活旅遊台
+https://4gtv.iill.top/4gtv/237
+#EXTINF:-1 tvg-name="亞洲旅遊台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",亞洲旅遊台
+https://4gtv.iill.top/4gtv/261
+#EXTINF:-1 tvg-name="Bloomberg TV" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",Bloomberg TV
+https://4gtv.iill.top/4gtv/283
+#EXTINF:-1 tvg-name="亞洲旅遊台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",亞洲旅遊台
+https://4gtv.iill.top/4gtv/250
+#EXTINF:-1 tvg-name="滾動力rollor" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",滾動力rollor
+https://4gtv.iill.top/4gtv/249
+#EXTINF:-1 tvg-name="電影原聲台CMusic" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",電影原聲台CMusic
+https://4gtv.iill.top/4gtv/218
+#EXTINF:-1 tvg-name="TRACE Urban" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",TRACE Urban
+https://4gtv.iill.top/4gtv/78
+#EXTINF:-1 tvg-name="MTV Live 音樂頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",MTV Live 音樂頻道
+https://4gtv.iill.top/4gtv/213
+#EXTINF:-1 tvg-name="Mezzo Live" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",Mezzo Live
+https://4gtv.iill.top/4gtv/79
+#EXTINF:-1 tvg-name="CLASSICA 古典樂" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",CLASSICA 古典樂
+https://4gtv.iill.top/4gtv/80
+#EXTINF:-1 tvg-name="INULTRA" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",INULTRA
+https://4gtv.iill.top/4gtv/444
+#EXTINF:-1 tvg-name="車迷TV" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",車迷TV
+https://4gtv.iill.top/4gtv/160
+#EXTINF:-1 tvg-name="MagellanTV頻道 (麥哲倫頻道)" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",MagellanTV頻道 (麥哲倫頻道)
+https://4gtv.iill.top/4gtv/450
+#EXTINF:-1 tvg-name="CI 罪案偵查頻道" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",CI 罪案偵查頻道
+https://4gtv.iill.top/4gtv/215
+#EXTINF:-1 tvg-name="影迷數位紀實台" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 记录",影迷數位紀實台
+https://4gtv.iill.top/4gtv/445
+#EXTINF:-1 tvg-name="HahaTai 哈哈台-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",HahaTai 哈哈台-FastTV飛速看
+https://4gtv.iill.top/4gtv/466
+#EXTINF:-1 tvg-name="天才衝衝衝-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",天才衝衝衝-FastTV飛速看
+https://4gtv.iill.top/4gtv/343
+#EXTINF:-1 tvg-name="一字千金-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",一字千金-FastTV飛速看
+https://4gtv.iill.top/4gtv/344
+#EXTINF:-1 tvg-name="食尚玩家-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",食尚玩家-FastTV飛速看
+https://4gtv.iill.top/4gtv/348
+#EXTINF:-1 tvg-name="威廉沈歡樂送-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",威廉沈歡樂送-FastTV飛速看
+https://4gtv.iill.top/4gtv/435
+#EXTINF:-1 tvg-name="我的成長-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",我的成長-FastTV飛速看
+https://4gtv.iill.top/4gtv/390
+#EXTINF:-1 tvg-name="綜藝大集合-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",綜藝大集合-FastTV飛速看
+https://4gtv.iill.top/4gtv/345
+#EXTINF:-1 tvg-name="女人我最大-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",女人我最大-FastTV飛速看
+https://4gtv.iill.top/4gtv/347
+#EXTINF:-1 tvg-name="姊妹亮起來-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",姊妹亮起來-FastTV飛速看
+https://4gtv.iill.top/4gtv/377
+#EXTINF:-1 tvg-name="中國傳奇故事-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",中國傳奇故事-FastTV飛速看
+https://4gtv.iill.top/4gtv/458
+#EXTINF:-1 tvg-name="武媚娘傳奇-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",武媚娘傳奇-FastTV飛速看
+https://4gtv.iill.top/4gtv/455
+#EXTINF:-1 tvg-name="花千骨-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",花千骨-FastTV飛速看
+https://4gtv.iill.top/4gtv/397
+#EXTINF:-1 tvg-name="台灣傳奇-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",台灣傳奇-FastTV飛速看
+https://4gtv.iill.top/4gtv/419
+#EXTINF:-1 tvg-name="女力故事館-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",女力故事館-FastTV飛速看
+https://4gtv.iill.top/4gtv/456
+#EXTINF:-1 tvg-name="怪獸之王-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",怪獸之王-FastTV飛速看
+https://4gtv.iill.top/4gtv/438
+#EXTINF:-1 tvg-name="以家人之名-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",以家人之名-FastTV飛速看
+https://4gtv.iill.top/4gtv/383
+#EXTINF:-1 tvg-name="加油喜事-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",加油喜事-FastTV飛速看
+https://4gtv.iill.top/4gtv/384
+#EXTINF:-1 tvg-name="去有風的地方-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",去有風的地方-FastTV飛速看
+https://4gtv.iill.top/4gtv/386
+#EXTINF:-1 tvg-name="別打擾我種田-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",別打擾我種田-FastTV飛速看
+https://4gtv.iill.top/4gtv/398
+#EXTINF:-1 tvg-name="5566偶像劇-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",5566偶像劇-FastTV飛速看
+https://4gtv.iill.top/4gtv/399
+#EXTINF:-1 tvg-name="不敗愛情偶像劇-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",不敗愛情偶像劇-FastTV飛速看
+https://4gtv.iill.top/4gtv/401
+#EXTINF:-1 tvg-name="小資女孩向前衝-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",小資女孩向前衝-FastTV飛速看
+https://4gtv.iill.top/4gtv/420
+#EXTINF:-1 tvg-name="以愛為營-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",以愛為營-FastTV飛速看
+https://4gtv.iill.top/4gtv/424
+#EXTINF:-1 tvg-name="新兵日記-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",新兵日記-FastTV飛速看
+https://4gtv.iill.top/4gtv/382
+#EXTINF:-1 tvg-name="台灣靈異事件-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",台灣靈異事件-FastTV飛速看
+https://4gtv.iill.top/4gtv/326
+#EXTINF:-1 tvg-name="戲說台灣-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",戲說台灣-FastTV飛速看
+https://4gtv.iill.top/4gtv/342
+#EXTINF:-1 tvg-name="飛龍在天-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",飛龍在天-FastTV飛速看
+https://4gtv.iill.top/4gtv/417
+#EXTINF:-1 tvg-name="花系列戲劇-FastTV飛速看" tvg-logo="https://cdn.jsdelivr.net/gh/1996TV/LOGO@main/mytvsuper.png" group-title="4GTV 综艺点播",花系列戲劇-FastTV飛速看
+https://4gtv.iill.top/4gtv/329
